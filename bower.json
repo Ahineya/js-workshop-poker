@@ -1,0 +1,21 @@
+{
+  "name": "jsw",
+  "version": "0.0.1",
+  "authors": [
+    "Pavlo Evsegneev <Pavlo_Evsegneev@epam.com>"
+  ],
+  "description": "Javascript workshop poker boilerplate",
+  "license": "ISC",
+  "homepage": "https://github.com/Ahineya/js-workshop-poker-boilerplate",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.4.1",
+    "domwork": "~0.1.1"
+  }
+}

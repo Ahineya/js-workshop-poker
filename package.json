@@ -1,0 +1,59 @@
+{
+  "name": "jsw",
+  "version": "0.0.1",
+  "description": "Javascript workshop poker boilerplate",
+  "main": "src/server/server.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ahineya/js-workshop-poker-boilerplate.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ahineya/js-workshop-poker-boilerplate/issues"
+  },
+  "homepage": "https://github.com/Ahineya/js-workshop-poker-boilerplate",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "concurrent": "^0.3.2",
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "^1.0.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-copy": "^0.6.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-less": "^0.11.4",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-karma": "^0.9.0",
+    "grunt-mocha": "^0.4.11",
+    "grunt-mocha-test": "^0.12.0",
+    "grunt-nodemon": "^0.3.0",
+    "grunt-run": "^0.2.4",
+    "jasmine-sinon": "^0.4.0",
+    "jshint": "^2.5.6",
+    "karma": "^0.12.23",
+    "karma-coverage": "^0.2.6",
+    "karma-jasmine": "^0.1.5",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon": "^1.0.3",
+    "karma-spec-reporter": "0.0.13",
+    "karma-story-reporter": "^0.2.2",
+    "mocha": "^1.21.4",
+    "nodemon": "^1.2.1",
+    "open": "0.0.5",
+    "sinon": "^1.10.3"
+  },
+  "dependencies": {
+    "ejs": "^1.0.0",
+    "express": "^4.9.5",
+    "mongo": "^0.1.0",
+    "mongoose": "^3.8.16",
+    "passport": "^0.2.1",
+    "passport-facebook": "^1.0.3",
+    "passport-local": "^1.0.0",
+    "socket.io": "^1.1.0"
+  }
+}
