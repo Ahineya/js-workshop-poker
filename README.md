@@ -29,18 +29,18 @@ All project code is lying under /src folder.
 
 In /src/client folder there are another folders:
 
-*img for storing images
-*js for javascript classes
-*less for less files (they will be compiled into one style.css file)
-*polymer-components for storing Polymer .html components
+* img for storing images
+* js for javascript classes
+* less for less files (they will be compiled into one style.css file)
+* polymer-components for storing Polymer .html components
 
 You can create .ejs files in /src/client directory, or create something like "/srv/client/views" folder - 
 grunt is smart enough to work with them :)
 
 After build grunt creates a /public folder and stores all built files in it.
 
-*/public/vendor - folder that contains third-party libraries, e.g. Polymer
-*/public/components - folder with copied /src/client/polymer-components folder
+* /public/vendor - folder that contains third-party libraries, e.g. Polymer
+* /public/components - folder with copied /src/client/polymer-components folder
 
 ######Dom work
 I have connected a simple pub/sub, ajax and DOM work library - http://github.com/mrlasking/domwork
@@ -50,7 +50,7 @@ We can use it for this tasks, or I can connect jQuery or smth else.
 There are /tests folder for tests. Feel free to create additional folders under /tests/client and /tests/server directories.
 Any test file should be named as [name].tests.js
 
-*Client tests runs under PhantomJS using Karma + Jasmine + Sinon
-*Server tests runs using Mocha + Chai
+* Client tests runs under PhantomJS using Karma + Jasmine + Sinon
+* Server tests runs using Mocha + Chai
 
 Grunt creates /coverage directory after running tests with Istanbul reports.
