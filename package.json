@@ -4,7 +4,8 @@
   "description": "Javascript workshop poker boilerplate",
   "main": "src/server/server.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "start": "grunt build && node src/server/poker.js"
   },
   "repository": {
     "type": "git",

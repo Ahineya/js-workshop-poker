@@ -75,7 +75,7 @@ module.exports = function(grunt) {
             js: {
                 files: [{expand: true, cwd: 'src/client/js', src: ['**'], dest: 'public/js'}]
             },
-            ejs: {files:[{expand: true, flatten: true, src: ['src/client/index.ejs'], dest: 'public/'}]},
+            ejs: {files:[{expand: true, cwd: 'src/client/', src: ['**/*.ejs'], dest: 'public/'}]},
             polymer: {
                 files: [{expand: true, cwd: 'src/client/polymer-components', src: ['**'], dest: 'public/components/'}]
             }

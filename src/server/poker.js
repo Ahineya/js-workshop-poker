@@ -12,6 +12,7 @@ app.set('views', __dirname + '/../../public');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+//We need to use router here
 app.get('/', function(req, res){
     res.render('index');
 });
