@@ -1,7 +1,7 @@
 ###Javascript workshop: poker
 [![Build Status](https://travis-ci.org/Ahineya/js-workshop-poker.svg?branch=master)](https://travis-ci.org/Ahineya/js-workshop-poker)
 #####Development
-
+ 
 ######Initial setup
 To do initial project setup you need bower, grunt and grunt-cli installed globally:
 
