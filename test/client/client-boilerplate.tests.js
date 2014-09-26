@@ -11,4 +11,9 @@ describe("Client boilerplate test", function() {
         expect(b.test()).toBeTruthy();
         expect(b.test2.calledOnce).toBeTruthy();
     });
+
+    it("Should perform second simple test", function() {
+        expect(true).toBeTruthy();
+    });
+
 });

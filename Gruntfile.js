@@ -16,6 +16,14 @@ module.exports = function(grunt) {
                 src: ['test/server/**/*.js']
             }
         },
+        mocha_istanbul: {
+            coverage: {
+                src: 'test', // a folder works nicely
+                options: {
+                    mask: 'server/**/*.tests.js'
+                }
+            }
+        },
         jshint: {
             files: [
                 "Gruntfile.js",
@@ -112,6 +120,14 @@ module.exports = function(grunt) {
                     spawn: false,
                     livereload: true
                 }
+            },
+            tests: {
+                files: ["test/client/**/*.js"],
+                tasks: ['jshint', 'karma'],
+                options: {
+                    spawn: false,
+                    livereload: true
+                }
             }
         },
         connect: {
@@ -171,6 +187,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-nodemon");
     grunt.loadNpmTasks("grunt-concurrent");
     grunt.loadNpmTasks("grunt-mocha-test");
+    grunt.loadNpmTasks("grunt-mocha-istanbul");
 
     grunt.registerTask('test', ['jshint', 'mochaTest', 'karma']);
     grunt.registerTask('default', ['jshint']);
