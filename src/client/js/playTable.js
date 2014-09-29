@@ -1,9 +1,5 @@
-function playTable() {
-    this.test = function() {
-        this.test2();
-        return true;
+(function (window) {
+    var playTable = function () {
     };
-    this.test2 = function() {
-        return 1;
-    };
-}
+    return window.playTable = playTable;
+})(window);
