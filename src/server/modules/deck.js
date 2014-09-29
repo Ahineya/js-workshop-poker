@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 module.exports = function() {
     var deck = [];
     var values = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -20,7 +22,12 @@ module.exports = function() {
         return deck;
     }
 
+    function _shuffle() {
+        deck = _.shuffle(deck);
+    }
+
     return {
-        getDeck: _getDeck
+        getDeck: _getDeck,
+        shuffle: _shuffle
     };
 };
