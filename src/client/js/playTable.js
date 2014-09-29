@@ -1,5 +1,6 @@
-(function (window) {
-    var playTable = function () {
-    };
-    window.playTable = playTable;
-})(window);
+Polymer('playTable', {
+    start: function () {
+        //this.$.counterVal.classList.add('highlight');
+        //socket.emit('test');
+    }
+});
