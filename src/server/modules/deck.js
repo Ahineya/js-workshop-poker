@@ -4,7 +4,7 @@ module.exports = function() {
     init();
 
     function init() {
-
+        deck[51] = 'lala';
     }
 
     function _getDeck() {

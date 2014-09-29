@@ -1,4 +1,5 @@
 var Deck = require('../../src/server/modules/deck.js');
+var chai = require('chai');
 
 describe('Deck tests', function() {
 
@@ -6,10 +7,10 @@ describe('Deck tests', function() {
 
     beforeEach(function() {
         deck = new Deck();
-
     });
 
     it('should build new deck', function() {
-        chai.assert.equal(deck.length, 52, 'deck contains 52 cards after init');
+        chai.assert.equal(deck.getDeck().length, 52, 'deck contains 52 cards after init');
     });
+
 });

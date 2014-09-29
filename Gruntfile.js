@@ -132,11 +132,8 @@ module.exports = function(grunt) {
                 }
             },
             serverTests: {
-                files: ["test/server/**/*.js"],
-                tasks: ['jshint', 'mochaTest'],
-                options: {
-                    spawn: false
-                }
+                files: ['src/server/**/*.js', "test/server/**/*.js"],
+                tasks: ['jshint', 'mochaTest']
             }
         },
         connect: {
