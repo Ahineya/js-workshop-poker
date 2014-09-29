@@ -4,6 +4,7 @@ module.exports = function(config) {
         frameworks: ['jasmine', 'sinon'],
         files: [
             '../test/socket.io.js',
+            '../bower_components/polymer/polymer.js',
             'client/**/*.js',
             '../test/client/**/*.js'
         ],
