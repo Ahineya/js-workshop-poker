@@ -45,6 +45,7 @@
     "karma-sinon": "^1.0.3",
     "karma-spec-reporter": "0.0.13",
     "karma-story-reporter": "^0.2.2",
+    "lodash": "^2.4.1",
     "mocha": "^1.21.4",
     "nodemon": "^1.2.1",
     "open": "0.0.5",
