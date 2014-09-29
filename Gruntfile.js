@@ -47,7 +47,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         flatten: true,
-                        src: ['src/client/images'],
+                        src: ['src/client/images/**/*.*'],
                         dest: 'public/img',
                         filter: 'isFile'
                     },
