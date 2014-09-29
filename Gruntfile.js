@@ -29,7 +29,9 @@ module.exports = function(grunt) {
                 "Gruntfile.js",
                 "src/**/*.js",
                 "test/**/*.js"
-            ]
+            ], options: {
+                jshintrc: '.jshintrc'
+            }
         },
         less: {
             development: {
@@ -127,6 +129,13 @@ module.exports = function(grunt) {
                 options: {
                     spawn: false,
                     livereload: true
+                }
+            },
+            serverTests: {
+                files: ["test/server/**/*.js"],
+                tasks: ['jshint', 'mochaTest'],
+                options: {
+                    spawn: false
                 }
             }
         },
