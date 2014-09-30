@@ -32,7 +32,6 @@ module.exports = function(config) {
             'karma-sinon',
             'karma-detect-browsers',
             'karma-coverage'
-
         ],
         detectBrowsers: {
             enabled: true,
