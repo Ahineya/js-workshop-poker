@@ -1,9 +1,10 @@
 var express = require('express');
 var app = express();
 
-var test = require('./modules/test.js');
+var Deck = require('./modules/deck.js');
+var deck = new Deck();
 
-test.test();
+deck.shuffle();
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/../../public'));
@@ -22,6 +23,11 @@ io.on('connection', function(socket) {
 
     socket.on('test', function() {
         console.log('Sockets are working');
+    });
+
+    socket.on('getHand', function(){
+        console.log('here');
+        socket.emit('getHand', deck.getDeck().slice(0,5));
     });
 
 });

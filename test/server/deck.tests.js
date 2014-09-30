@@ -22,7 +22,6 @@ describe('Deck tests', function() {
     it('should shuffle deck', function() {
         deck.shuffle();
         chai.assert(!_.isEqual(deck.getDeck(), rawDeck, 'shuffled deck not equals sorted deck'));
-
     });
 
 });
