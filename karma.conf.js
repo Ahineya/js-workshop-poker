@@ -1,7 +1,7 @@
 module.exports = function(config) {
     config.set({
         basePath: 'src',
-        frameworks: ['jasmine', 'sinon'],
+        frameworks: ['detectBrowsers', 'jasmine', 'sinon'],
         files: [
             '../bower_components/platform/platform.js',
             '../bower_components/polymer/polymer.js',
@@ -23,7 +23,17 @@ module.exports = function(config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Firefox'],
+        plugins: [
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-jasmine',
+            'karma-sinon',
+            'karma-detect-browsers'
+        ],
+        detectBrowsers: {
+            enabled: true,
+            usePhantomJS: false
+        },
         captureTimeout: 60000,
         singleRun: true
     });
