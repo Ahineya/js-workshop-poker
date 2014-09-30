@@ -2,11 +2,14 @@ var Deck = require('../../src/server/modules/deck.js');
 var chai = require('chai');
 var _ = require('lodash');
 
+var assert = chai.assert;
+
 describe('Deck tests', function() {
 
-    var deck;
-
     var DECK_LENGTH = 52;
+    var CARDS_IN_HAND = 5;
+
+    var deck;
 
     var rawDeck = getRawDeck();
 
@@ -15,13 +18,22 @@ describe('Deck tests', function() {
     });
 
     it('should build new deck', function() {
-        chai.assert.equal(deck.getDeck().length, DECK_LENGTH, 'deck contains ' + DECK_LENGTH + ' cards after init');
-        chai.assert(_.isEqual(deck.getDeck(), rawDeck), 'deck equals sorted deck');
+        assert.equal(deck.getDeck().length, DECK_LENGTH, 'deck contains ' + DECK_LENGTH + ' cards after init');
+        assert(_.isEqual(deck.getDeck(), rawDeck), 'deck equals sorted deck');
     });
 
     it('should shuffle deck', function() {
         deck.shuffle();
-        chai.assert(!_.isEqual(deck.getDeck(), rawDeck, 'shuffled deck not equals sorted deck'));
+        assert(!_.isEqual(deck.getDeck(), rawDeck, 'shuffled deck not equals sorted deck'));
+    });
+
+    it('should give cards in a hand', function() {
+
+        var hand = deck.give( CARDS_IN_HAND );
+
+        assert(hand.length === CARDS_IN_HAND, 'gives correct amount of cards from deck');
+        assert(deck.getDeck().length === DECK_LENGTH - CARDS_IN_HAND, 'removes proper count of cards from deck');
+
     });
 
 });

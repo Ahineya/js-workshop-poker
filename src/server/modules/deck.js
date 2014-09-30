@@ -26,8 +26,18 @@ module.exports = function() {
         deck = _.shuffle(deck);
     }
 
+    function _give( amount ) {
+        if (amount > deck.length) {
+            amount = deck.length;
+        }
+        var hand = deck.slice(0, amount);
+        deck = deck.slice(0, deck.length - amount);
+        return hand;
+    }
+
     return {
         getDeck: _getDeck,
-        shuffle: _shuffle
+        shuffle: _shuffle,
+        give: _give
     };
 };

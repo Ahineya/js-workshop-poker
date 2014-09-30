@@ -2,7 +2,7 @@
   "name": "jsw",
   "version": "0.0.1",
   "description": "Javascript workshop poker boilerplate",
-  "main": "src/server/server.js",
+  "main": "src/server/poker.js",
   "scripts": {
     "test": "grunt test",
     "start": "grunt build && node src/server/poker.js"
@@ -39,6 +39,7 @@
     "jasmine-sinon": "^0.4.0",
     "jshint": "^2.5.6",
     "karma": "^0.12.23",
+    "karma-chrome-launcher": "^0.1.4",
     "karma-coverage": "^0.2.6",
     "karma-jasmine": "^0.1.5",
     "karma-phantomjs-launcher": "^0.1.4",

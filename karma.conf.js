@@ -3,8 +3,9 @@ module.exports = function(config) {
         basePath: 'src',
         frameworks: ['jasmine', 'sinon'],
         files: [
-            '../test/socket.io.js',
+            '../bower_components/platform/platform.js',
             '../bower_components/polymer/polymer.js',
+            '../test/socket.io.js',
             'client/**/*.js',
             '../test/client/**/*.js'
         ],
@@ -22,7 +23,7 @@ module.exports = function(config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
         captureTimeout: 60000,
         singleRun: true
     });

@@ -19,6 +19,7 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket) {
+
     console.log("Connected: ", socket.id);
 
     socket.on('test', function() {
@@ -26,7 +27,6 @@ io.on('connection', function(socket) {
     });
 
     socket.on('getHand', function(){
-        console.log('here');
         socket.emit('getHand', deck.getDeck().slice(0,5));
     });
 
