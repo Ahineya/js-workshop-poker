@@ -23,6 +23,7 @@ module.exports = function(config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
+        browsers: ['Firefox'],
         plugins: [
             'karma-chrome-launcher',
             'karma-firefox-launcher',
@@ -31,7 +32,7 @@ module.exports = function(config) {
             'karma-sinon',
             'karma-detect-browsers',
             'karma-coverage'
-            
+
         ],
         detectBrowsers: {
             enabled: true,
