@@ -27,8 +27,10 @@ module.exports = function(config) {
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-jasmine',
+            'karma-spec-reporter',
             'karma-sinon',
-            'karma-detect-browsers'
+            'karma-detect-browsers',
+            'karma-coverage'
         ],
         detectBrowsers: {
             enabled: true,
