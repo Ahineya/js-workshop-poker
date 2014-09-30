@@ -4,30 +4,41 @@ var _ = require('lodash');
 
 var assert = chai.assert;
 
-xdescribe('Players tests', function() {
+describe('Players tests', function() {
 
     var players;
+
+    var socket = {
+        id: "test-socket-id"
+    };
+
+    var rawPlayer = {
+        name: "test",
+        socket: socket,
+        id: socket.id
+    };
 
     beforeEach(function() {
         players = new Players();
     });
 
-    it('should create empry players object', function() {
-        assert.equals(players.getPlayers().length, 0, 'there are no added players');
+    it('should create empty players object', function() {
+        assert.equal(players.getPlayers().length, 0, 'there are no added players');
     });
 
     it('should add new player', function() {
-        var socket = {
-            id: "test socket id"
-        };
-        players.add({
-            name: "loh",
-            socket: socket,
-            id: socket.id
-        });
 
-        assert.equals(players.getPlayers().length, 0, 'there are one added player')
+        players.add(rawPlayer);
 
+        assert.equal(players.getPlayers().length, 1, 'there are one added player')
+
+    });
+
+    it('should get player by id', function() {
+
+        players.add(rawPlayer);
+
+        assert(_.isEqual(players.getById(socket.id), rawPlayer), 'got correct player');
     });
 
 });
