@@ -42,11 +42,25 @@ module.exports = function() {
         return players.length;
     }
 
+    function _ante(amount) {
+        players = players.map(function(item) {
+            item.coins-=amount;
+            return item;
+        });
+        return amount * players.length;
+    }
+
+    function _forEach(f) {
+        return players.forEach(f);
+    }
+
     return {
         add: _add,
         getPlayers: _getPlayers,
         getById: _getPlayerById,
         assignHand: _assignHand,
-        count: _count
+        count: _count,
+        ante: _ante,
+        forEach: _forEach
     }
 };

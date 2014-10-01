@@ -50,4 +50,10 @@ describe('Players tests', function() {
         assert.equal(players.count(), 1, 'it has correct count result');
     });
 
+    it('should substract coins when calling ante method', function() {
+        players.add(rawPlayer);
+        assert.equal(players.ante(1), 1, 'ante returns correct value');
+        assert.equal(players.getById(rawPlayer.id).coins, 99, 'player have correct amount of coins after ante');
+    });
+
 });
