@@ -1,13 +1,16 @@
 var Players = require('./players.js');
 var Deck = require('./deck.js');
+var _ = require('lodash');
 
 module.exports = function() {
     var players = new Players();
     var deck;
     var bank = 0;
-    var gameState = {
+    var gameState = {};
 
-    };
+    var turn = 1;
+
+    var dealer;
 
     function _addPlayers(playersArr) {
         playersArr.forEach(function(player) {
@@ -25,10 +28,15 @@ module.exports = function() {
             player.hand = deck.give(5);
         });
 
+        dealer = players.getPlayers()[_.random(5)];
+
         gameState = {
             players: getSerialazablePlayers(players),
-            bank: bank
+            bank: bank,
+            turn: turn,
+            dealer: dealer
         };
+
         players.forEach(function(player) {
             player.socket.emit('gameStart', gameState);
         });
