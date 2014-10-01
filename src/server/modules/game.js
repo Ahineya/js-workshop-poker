@@ -28,17 +28,19 @@ module.exports = function() {
             player.hand = deck.give(5);
         });
 
-        dealer = players.getPlayers()[_.random(5)];
+        dealer = players.getPlayers()[_.random(players.length-1)];
 
         gameState = {
             players: getSerialazablePlayers(players),
             bank: bank,
             turn: turn,
-            dealer: dealer
+            dealer: dealer.id
         };
 
         players.forEach(function(player) {
-            player.socket.emit('gameStart', gameState);
+            player.socket.emit(
+                'gameStart',
+                cutGameStateForPlayer(_.cloneDeep(gameState), player.id));
         });
 
     }
@@ -71,4 +73,13 @@ function getSerialazablePlayers(players) {
                 hand: item.hand
             }
         }))
+}
+
+function cutGameStateForPlayer(gameState, playerId) {
+    return gameState.players.map(function(player) {
+        if (player.id !== playerId) {
+            player.hand = [];
+        }
+        return player;
+    });
 }
