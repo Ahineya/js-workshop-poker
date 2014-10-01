@@ -1,14 +1,14 @@
 (function (globals) {
     Polymer('play-table', {
+        account: undefined,
         start: function () {
-
         },
         created: function() {
         },
         ready: function() {
             this.cancelUnbindAll();
-            socket.on(globals.EVENTS.START_GAME, function () {
-            });
+            socket.on(globals.EVENTS.START_GAME, this.onStartGame.bind(this));
+            socket.on(globals.EVENTS.YOUR_DATA, this.onYourData.bind(this));
         },
         attached: function () {
         },
@@ -20,6 +20,17 @@
         observe: {
         },
         attributeChanged: function(attrName, oldVal, newVal) {
+        },
+        onStartGame: function (data) {
+            this.myCards = data.filter(function (item) {
+                return item.id == this.account.id;
+            }, this)[0];
+            this.generateCardStack(this.myCards.hand.map(function (card) {
+                return card.value + card.suite;
+            }));
+        },
+        onYourData: function (data) {
+            this.account =  data;
         },
         getPlayCardElement: function (card) {
             var value = card.substr(0, card.length - 1);
