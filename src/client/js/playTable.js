@@ -1,10 +1,14 @@
-(function () {
+(function (globals) {
     Polymer('play-table', {
+        start: function () {
+
+        },
         created: function() {
         },
         ready: function() {
             this.cancelUnbindAll();
-            this.numberOfPlayers = 5;
+            socket.on(globals.EVENTS.START_GAME, function () {
+            });
         },
         attached: function () {
         },
@@ -16,6 +20,9 @@
         observe: {
         },
         attributeChanged: function(attrName, oldVal, newVal) {
+        },
+        getPlayCardElement: function (card) {
+            return card;
         }
     });
 })(window);
