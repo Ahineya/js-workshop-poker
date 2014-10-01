@@ -7,6 +7,8 @@ var deck = new Deck();
 var Players = require('./modules/players.js');
 var players = new Players();
 
+var Game = require('./modules/game.js');
+
 deck.shuffle();
 
 app.set('view engine', 'ejs');
@@ -37,12 +39,16 @@ io.on('connection', function(socket) {
 
     console.log("Connected: ", socket.id);
 
-    players.add({
+    var player = {
         name: socket.id,
-        socket: socket,
         id: socket.id,
         coins: 100
-    });
+    };
+
+    socket.emit('yourData', player);
+
+    player.socket= socket;
+    players.add(player);
 
     socket.emit(
         'playersList',
@@ -54,12 +60,15 @@ io.on('connection', function(socket) {
         getSerialazablePlayers()
     );
 
+    if(players.count() === 3) {
+        var game = new Game();
+        game.addPlayers(players.getPlayers());
+        game.start();
+        console.log('here');
+    }
+
     socket.on('test', function() {
         console.log('Sockets are working');
-    });
-
-    socket.on('getHand', function(){
-        socket.emit('getHand', deck.getDeck().slice(0,5));
     });
 
 });

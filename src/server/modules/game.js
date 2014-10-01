@@ -5,6 +5,9 @@ module.exports = function() {
     var players = new Players();
     var deck;
     var bank = 0;
+    var gameState = {
+
+    };
 
     function _addPlayers(playersArr) {
         playersArr.forEach(function(player) {
@@ -17,6 +20,16 @@ module.exports = function() {
         deck.shuffle();
 
         _ante();
+
+        gameState = {
+            players: getSerialazablePlayers(players),
+            bank: bank
+        };
+
+        players.forEach(function(player) {
+            player.hand = deck.give(5);
+            player.socket.emit('gameStart', gameState);
+        });
 
     }
 
@@ -36,3 +49,16 @@ module.exports = function() {
     }
 
 };
+
+function getSerialazablePlayers(players) {
+    return (players
+        .getPlayers()
+        .map(function(item){
+            return {
+                name: item.name,
+                id: item.id,
+                coins: item.coins,
+                hand: item.hand
+            }
+        }))
+}
