@@ -6,6 +6,7 @@ module.exports = function(config) {
             '../bower_components/platform/platform.js',
             '../bower_components/polymer/polymer.js',
             '../test/socket.io.js',
+            '../test/jasmine-config.js',
             'client/**/*.js',
             'client/polymer-components/**/*.html',
             '../test/client/**/*.js'

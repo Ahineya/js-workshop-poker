@@ -1,10 +1,16 @@
 <polymer-element name="play-table" constructor="PlayTable">
     <template>
-        <style> /*...*/ </style>
+        <link rel="stylesheet" href="../css/style.css">
         <content></content>
-        <div></div>
-        <button on-tap="{{start}}">Button</button>
-        <content></content>
+        <div class="playTable">
+            <div id="playerHand" class="cardstack">
+                <div class="card rankAS">A <br/> &spades;</div>
+                <div class="card rank2H">2 <br/> &hearts;</div>
+                <div class="card rank3C">3 <br/> &clubs;</div>
+                <div class="card rank4D">4 <br/> &diams;</div>
+                <div class="card rank5S">5 <br/> &spades;</div>
+            </div>
+        </div>
     </template>
     <script src="../js/playTable.js"></script>
 </polymer-element>
