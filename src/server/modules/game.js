@@ -21,13 +21,15 @@ module.exports = function() {
 
         _ante();
 
+        players.forEach(function(player) {
+            player.hand = deck.give(5);
+        });
+
         gameState = {
             players: getSerialazablePlayers(players),
             bank: bank
         };
-
         players.forEach(function(player) {
-            player.hand = deck.give(5);
             player.socket.emit('gameStart', gameState);
         });
 
