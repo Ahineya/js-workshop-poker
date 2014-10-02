@@ -1,7 +1,9 @@
 (function (globals) {
     var EVENTS = {
         START_GAME: 'gameStart',
-        YOUR_DATA: 'yourData'
+        YOUR_DATA: 'yourData',
+        YOUR_TURN: 'yourTurn',
+        I_TURN: 'iTurn'
     };
     var CARDS = [
         '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', '10H', 'JH', 'QH', 'KH', 'AH',

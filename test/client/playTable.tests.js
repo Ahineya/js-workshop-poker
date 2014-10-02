@@ -1,12 +1,9 @@
 document.addEventListener('polymer-ready', function () {
     describe('Play table tests', function () {
-        var playTable, socketWaitForGameStartStub;
+        var playTable, socketWaitForGameStartStub, cards, account;
         beforeEach(function () {
             socketWaitForGameStartStub = pockerSandbox.stub(socket, 'on');
             playTable = new PlayTable();
-        });
-
-        afterEach(function () {
         });
 
         it('should wait for start of game', function () {
@@ -50,12 +47,41 @@ document.addEventListener('polymer-ready', function () {
         });
 
         it('should generate play stack, when it comes to player', function () {
-            var account = {
-                name: 'scjpCfmCsvzUbt3tAAAi',
-                id: 'scjpCfmCsvzUbt3tAAAi',
-                coins: 100
-            };
-            var cards = [
+            var generateCardStackStub = pockerSandbox.stub(playTable, 'generateCardStack');
+            playTable.account = account;
+            playTable.onStartGame(cards);
+            expect(generateCardStackStub.firstCall.args[0]).toEqual(['9D', '7D', '2S', 'AS', 'AC']);
+        });
+        
+        it('should generate other players hands', function () {
+            var playerHand = document.createElement('div');
+            for (var i = 0; i < 5; i++) {
+                var hiddenCard = document.createElement('div');
+                hiddenCard.classList.add('card');
+                hiddenCard.classList.add('cover');
+                playerHand.appendChild(hiddenCard);
+            }
+            playTable.generatePlayTableWithActions(cards);
+            expect(playTable.$.leftPlayerHand.innerHTML).toEqual(playerHand.innerHTML);
+            expect(playTable.$.rightPlayerHand.innerHTML).toEqual(playerHand.innerHTML);
+        });
+
+        it('should lock table if player do not turn', function () {
+            playTable.account = account;
+            playTable.generatePlayTableWithActions(cards);
+            expect(playTable.$.modalMask.classList.contains('visible')).toEqual(true);
+        });
+
+        account = {
+            name: 'scjpCfmCsvzUbt3tAAAi',
+            id: 'scjpCfmCsvzUbt3tAAAi',
+            coins: 100
+        };
+        cards = {
+            bank: 500,
+            turn: 2,
+            dealer: '-tUTqde4QBlMEjZ_AAAB',
+            players: [
                 {
                     'name': 'scjpCfmCsvzUbt3tAAAi',
                     'id': 'scjpCfmCsvzUbt3tAAAi',
@@ -65,7 +91,7 @@ document.addEventListener('polymer-ready', function () {
                         {'value': '7', 'suite': 'D'},
                         {'value': '2', 'suite': 'S'},
                         {'value': 'A', 'suite': 'S'},
-                        {'value': 'A', 'suite': 'T'}
+                        {'value': 'A', 'suite': 'C'}
                     ]
                 },
                 {
@@ -80,12 +106,8 @@ document.addEventListener('polymer-ready', function () {
                     'coins': 99,
                     'hand': []
                 }
-            ];
-            var generateCardStackStub = pockerSandbox.stub(playTable, 'generateCardStack');
-            playTable.account = account;
-            playTable.onStartGame(cards);
-            expect(generateCardStackStub.firstCall.args[0]).toEqual(['9D', '7D', '2S', 'AS', 'AT']);
-        });
+            ]
+        };
 
     });
 

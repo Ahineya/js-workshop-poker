@@ -1,6 +1,6 @@
 (function (globals) {
     Polymer('play-table', {
-        account: undefined,
+        account: {},
         start: function () {
         },
         created: function() {
@@ -22,12 +22,13 @@
         attributeChanged: function(attrName, oldVal, newVal) {
         },
         onStartGame: function (data) {
-            this.myCards = data.filter(function (item) {
+            this.myCards = data.players.filter(function (item) {
                 return item.id == this.account.id;
             }, this)[0];
             this.generateCardStack(this.myCards.hand.map(function (card) {
                 return card.value + card.suite;
             }));
+            this.generatePlayTableWithActions(data);
         },
         onYourData: function (data) {
             this.account =  data;
@@ -46,6 +47,20 @@
                 var cardElement = this.getPlayCardElement(cards[i]);
                 this.$.playerHand.appendChild(cardElement);
             }
+        },
+
+        generatePlayTableWithActions: function (cards) {
+            for (var i = 0; i < 5; i++) {
+                var hiddenCard = document.createElement('div');
+                hiddenCard.classList.add('card');
+                hiddenCard.classList.add('cover');
+                this.$.leftPlayerHand.appendChild(hiddenCard);
+                this.$.rightPlayerHand.appendChild(hiddenCard.cloneNode(true));
+            }
+            if (cards.dealer !== this.account.id) {
+                this.$.modalMask.classList.add('visible');
+            }
         }
+
     });
 })(window);

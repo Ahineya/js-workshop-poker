@@ -2,9 +2,20 @@
     <template>
         <link rel="stylesheet" href="../css/style.css">
         <content></content>
-        <div class="playTable">
-            <div id="playerHand" class="cardstack">
+        <div id="playTable" class="playTable">
+            <div id="leftPlayer" class="cardstack">
+                <div id="leftPlayerMenu"></div>
+                <div id="leftPlayerHand"></div>
             </div>
+            <div id="rightPlayer" class="cardstack">
+                <div id="rightPlayerMenu"></div>
+                <div id="rightPlayerHand"></div>
+            </div>
+            <div id="player" class="cardstack">
+                <div id="playerMenu"></div>
+                <div id="playerHand"></div>
+            </div>
+            <div id="modalMask"><div>PLEASE, WAIT FOR YOUR TURN</div></div>
         </div>
     </template>
     <script src="../js/playTable.js"></script>
