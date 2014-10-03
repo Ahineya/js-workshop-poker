@@ -9,6 +9,7 @@
             this.cancelUnbindAll();
             socket.on(globals.EVENTS.START_GAME, this.onStartGame.bind(this));
             socket.on(globals.EVENTS.YOUR_DATA, this.onYourData.bind(this));
+            socket.on(globals.EVENTS.YOUR_TURN, this.onYourTurn.bind(this));
         },
         attached: function () {
         },
@@ -60,6 +61,34 @@
             if (cards.dealer !== this.account.id) {
                 this.$.modalMask.classList.add('visible');
             }
+        },
+        onYourTurn: function (data) {
+            while (this.$.playerOption.options.length > 0) {
+                this.$.playerOption.remove(0);
+            }
+            while (this.$.playerBet.options.length > 0) {
+                this.$.playerBet.remove(0);
+            }
+            var first = true;
+            for (var i = 0; i < data.turnOptions.length; i++) {
+                this.$.playerOption.add(new Option(data.turnOptions[i]), first, first);
+                first = false;
+            }
+            first = true;
+            for (var j = 0; j < BETS.length; j++) {
+                this.$.playerBet.add(new Option(BETS[j]), first, first);
+                first = false;
+            }
+            this.$.modalMask.classList.remove('visible');
+            this.$.playerMenu.classList.add('visible');
+        },
+        onBetClick: function () {
+            socket.emit(EVENTS.I_TURN, {
+                turn: this.$.playerOption.value,
+                bet: parseInt(this.$.playerBet.value)
+            });
+            this.$.modalMask.classList.add('visible');
+            this.$.playerMenu.classList.remove('visible');
         }
 
     });

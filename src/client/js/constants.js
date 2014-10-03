@@ -3,7 +3,9 @@
         START_GAME: 'gameStart',
         YOUR_DATA: 'yourData',
         YOUR_TURN: 'yourTurn',
-        I_TURN: 'iTurn'
+        I_TURN: 'iTurn',
+        ROUND_ENDS: 'roundEnds',
+        I_EXCHANGE_CARDS: 'iExchangeCards'
     };
     var CARDS = [
         '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', '10H', 'JH', 'QH', 'KH', 'AH',
@@ -17,6 +19,16 @@
         'S': 'spades',
         'C': 'clubs'
     };
+    var TURNS = {
+        BET: 'bet',
+        CALL: 'call',
+        PASS: 'pass',
+        FOLD: 'fold',
+        RAISE: 'raise'
+    };
+    var BETS = [1, 5, 10, 50, 100, 500];
+    globals.TURNS = TURNS;
+    globals.BETS = BETS;
     globals.CARD_SUITS = CARD_SUITS;
     globals.CARDS = CARDS;
     globals.EVENTS = EVENTS;

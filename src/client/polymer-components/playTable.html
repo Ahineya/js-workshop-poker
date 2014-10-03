@@ -12,7 +12,11 @@
                 <div id="rightPlayerHand"></div>
             </div>
             <div id="player" class="cardstack">
-                <div id="playerMenu"></div>
+                <div id="playerMenu">
+                    <select name="option" id="playerOption"></select>
+                    <select name="option" id="playerBet"></select>
+                    <button id="playerBetButton" on-click="{{onBetClick}}">I BET</button>
+                </div>
                 <div id="playerHand"></div>
             </div>
             <div id="modalMask"><div>PLEASE, WAIT FOR YOUR TURN</div></div>

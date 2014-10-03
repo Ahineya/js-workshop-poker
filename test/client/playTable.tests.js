@@ -14,6 +14,11 @@ document.addEventListener('polymer-ready', function () {
             expect(socketWaitForGameStartStub.secondCall.args[0]).toEqual(EVENTS.YOUR_DATA);
         });
 
+        it('should wait for turn in game', function () {
+            expect(socketWaitForGameStartStub.thirdCall.args[0]).toEqual(EVENTS.YOUR_TURN);
+        });
+
+
         it('should get correct card styling', function () {
             for (var i = 0; i < CARDS.length; i++) {
                 var card = CARDS[i];
@@ -70,6 +75,67 @@ document.addEventListener('polymer-ready', function () {
             playTable.account = account;
             playTable.generatePlayTableWithActions(cards);
             expect(playTable.$.modalMask.classList.contains('visible')).toEqual(true);
+        });
+
+        it('should activate turn options when player receives turn', function () {
+            var yourTurnData = {
+                turnOptions: [TURNS.CALL, TURNS.RAISE, TURNS.PASS],
+                playersTurn: [
+                    {
+                        id: '-tUTqde4QBlMEjZ_AAAB',
+                        turn: TURNS.BET,
+                        value: 5
+                    },
+                    {
+                        id: 'XfOZvcmKGjJCLAKdAAAC',
+                        turn: TURNS.PASS,
+                        value: null
+                    }
+                ]
+            };
+            var optionSelector = document.createElement('select');
+            var first = true;
+            for (var i = 0; i < yourTurnData.turnOptions.length; i++) {
+                optionSelector.add(new Option(yourTurnData.turnOptions[i]), first, first);
+                first = false;
+            }
+            var betSelector = document.createElement('select');
+            first = true;
+            for (var j = 0; j < BETS.length; j++) {
+                betSelector.add(new Option(BETS[j]), first, first);
+                first = false;
+            }
+            playTable.onYourTurn(yourTurnData);
+            expect(playTable.$.playerOption.innerHTML).toEqual(optionSelector.innerHTML);
+            expect(playTable.$.playerBet.innerHTML).toEqual(betSelector.innerHTML);
+        });
+
+        it('should send player turn with params to server', function () {
+            var socketSendTurnStub = pockerSandbox.stub(socket, 'emit');
+            var yourTurnData = {
+                turnOptions: [TURNS.CALL, TURNS.RAISE, TURNS.PASS],
+                playersTurn: [
+                    {
+                        id: '-tUTqde4QBlMEjZ_AAAB',
+                        turn: TURNS.BET,
+                        value: 5
+                    },
+                    {
+                        id: 'XfOZvcmKGjJCLAKdAAAC',
+                        turn: TURNS.PASS,
+                        value: null
+                    }
+                ]
+            };
+            playTable.onYourTurn(yourTurnData);
+            playTable.$.playerOption.value = TURNS.RAISE;
+            playTable.$.playerBet.value = BETS[3];
+            eventFire(playTable.$.playerBetButton, 'click');
+            expect(socketSendTurnStub.firstCall.args[0]).toEqual(EVENTS.I_TURN);
+            expect(socketSendTurnStub.firstCall.args[1]).toEqual({
+                turn: TURNS.RAISE,
+                bet: BETS[3]
+            });
         });
 
         account = {
