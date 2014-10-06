@@ -8,6 +8,15 @@ module.exports = function() {
     var bank = 0;
     var gameState = {};
 
+    var STAGES = {
+        INIT: "init",
+        SALES: "sales",
+        CARDS_CHANGE: "cards_change",
+        TURN_END: "turn_end"
+    };
+
+    var stage = STAGES.INIT;
+
     var turn = 1;
 
     var dealer;
@@ -46,6 +55,12 @@ module.exports = function() {
             )
         });
 
+        stage = STAGES.SALES;
+
+        dealer.socket.emit('yourTurn', {
+            turnOptions: ['call', 'fold', 'raise']
+        });
+
     }
 
     function _ante() {
@@ -56,11 +71,16 @@ module.exports = function() {
         return bank;
     }
 
+    function _getCurrentStage() {
+        return stage;
+    }
+
     return {
         addPlayers: _addPlayers,
         players: players,
         start: _start,
-        getBank: _getBank
+        getBank: _getBank,
+        getCurrentStage: _getCurrentStage
     }
 
 };

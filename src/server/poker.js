@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var passport = require('passport');
 
 var Deck = require('./modules/deck.js');
 var deck = new Deck();
@@ -22,6 +23,18 @@ var io = require('socket.io')(server);
 app.get('/', function(req, res){
     res.render('index');
 });
+
+app.get('/auth/facebook',
+    passport.authenticate('facebook'),
+    function(req, res){
+    }
+);
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/' }),
+    function(req, res) {
+        res.redirect('/account');
+    }
+);
 
 function getSerialazablePlayers() {
     return (players
@@ -64,7 +77,8 @@ io.on('connection', function(socket) {
         var game = new Game();
         game.addPlayers(players.getPlayers());
         game.start();
-        console.log('here');
+        console.log('game started');
+        console.log('current stage is: ' + game.getCurrentStage());
     }
 
     socket.on('test', function() {

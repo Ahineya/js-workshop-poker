@@ -36,6 +36,13 @@ describe('Game tests', function() {
         }
     ];
 
+    var STAGES = {
+        INIT: "init",
+        SALES: "sales",
+        CARDS_CHANGE: "cards_change",
+        TURN_END: "turn_end"
+    };
+
     beforeEach(function() {
         game = new Game();
     });
@@ -47,6 +54,16 @@ describe('Game tests', function() {
 
     it('should have start method', function() {
         assert(typeof game.start === "function");
+    });
+
+    it('should get correct state after starting a game', function() {
+        game.addPlayers(players);
+
+        assert(game.getCurrentStage() === STAGES.INIT, 'before start game is on INIT stage');
+
+        game.start();
+
+        assert(game.getCurrentStage() === STAGES.SALES, 'after game start there are SALES stage');
     });
 
     it('should emit socket action in start method', function() {

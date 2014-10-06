@@ -5,7 +5,7 @@
   "main": "src/server/poker.js",
   "scripts": {
     "test": "grunt test",
-    "start": "grunt build && node src/server/poker.js"
+    "start": "bower install && grunt build && node src/server/poker.js"
   },
   "repository": {
     "type": "git",
