@@ -40,7 +40,10 @@ module.exports = function() {
         players.forEach(function(player) {
             player.socket.emit(
                 'gameStart',
-                { players: cutGameStateForPlayer(_.cloneDeep(gameState), player.id)});
+                _.extend({}, gameState, {
+                    players: cutGameStateForPlayer(_.cloneDeep(gameState), player.id)
+                })
+            )
         });
 
     }
