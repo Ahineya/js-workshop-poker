@@ -64,7 +64,9 @@ app.get('/', function(req, res){
     res.render('index', {user: data});
 });
 
-
+app.get('/auth', function(req, res) {
+    res.render('auth');
+});
 
 app.get('/account',
     ensureAuthenticated,
