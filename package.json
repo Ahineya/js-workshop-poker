@@ -6,7 +6,7 @@
   "scripts": {
     "test": "grunt test",
     "start": "node src/server/poker.js",
-    "postinstall": "echo postinstall time; node ./node_modules/bower/bin/bower.js install; ./node_modules/grunt-cli/bin/grunt build"
+    "postinstall": "echo postinstall time; ./node_modules/bower/bin/bower install; ./node_modules/grunt-cli/bin/grunt build"
   },
   "repository": {
     "type": "git",
