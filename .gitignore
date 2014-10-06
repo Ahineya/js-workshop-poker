@@ -4,3 +4,4 @@ coverage/
 .idea/
 public/
 .rebooted
+src/server/config.js

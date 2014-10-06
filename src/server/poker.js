@@ -1,6 +1,5 @@
 var express = require('express');
 var app = express();
-var passport = require('passport');
 
 var Deck = require('./modules/deck.js');
 var deck = new Deck();
@@ -9,6 +8,30 @@ var Players = require('./modules/players.js');
 var players = new Players();
 
 var Game = require('./modules/game.js');
+
+var config = require('./config.js');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+passport.deserializeUser(function(obj, done) {
+    done(null, obj);
+});
+
+passport.use(new FacebookStrategy({
+        clientID: config.oauth.facebook.clientID,
+        clientSecret: config.oauth.facebook.clientSecret,
+        callbackURL: config.oauth.facebook.callbackURL
+    },
+    function(accessToken, refreshToken, profile, done) {
+        process.nextTick(function () {
+            return done(null, profile);
+        });
+    }
+));
 
 deck.shuffle();
 
