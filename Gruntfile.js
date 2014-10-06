@@ -201,9 +201,8 @@ module.exports = function(grunt) {
     grunt.registerTask('develop-front', ['clean','less', 'copy', 'connect', 'watch']);
     grunt.registerTask('develop', ['concurrent']);
 
-    grunt.registerTask('heroku:development', 'clean less copy');
-    or
-
-    grunt.registerTask('heroku:production', 'clean less copy');
+    grunt.registerTask('heroku:development', 'build');
+    grunt.registerTask('heroku:production', 'build');
+    grunt.registerTask('heroku:', 'build');
 
 };
