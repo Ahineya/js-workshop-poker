@@ -77,7 +77,7 @@ io.on('connection', function(socket) {
         var game = new Game();
         game.addPlayers(players.getPlayers());
         game.start();
-        console.log('game started');
+        console.log('game started!');
         console.log('current stage is: ' + game.getCurrentStage());
     }
 
