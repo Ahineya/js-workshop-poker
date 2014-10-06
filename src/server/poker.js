@@ -1,6 +1,11 @@
 var express = require('express');
 var app = express();
 
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var methodOverride = require('method-override');
+
 var Deck = require('./modules/deck.js');
 var deck = new Deck();
 
@@ -39,25 +44,55 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/../../public'));
 app.set('views', __dirname + '/../../public');
 
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(methodOverride());
+app.use(session({ secret: 'js-workshop-poker' }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 //We need to use router here
 app.get('/', function(req, res){
-    res.render('index');
+    var data = {};
+    if (req.isAuthenticated()) {
+        data = req.user;
+    }
+    res.render('index', {user: data});
 });
+
+
+
+app.get('/account',
+    ensureAuthenticated,
+    function(req, res) {
+        console.log(req.user);
+        res.render('account', {user: req.user});
+    }
+);
 
 app.get('/auth/facebook',
     passport.authenticate('facebook'),
     function(req, res){
-    }
-);
+    });
+
 app.get('/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/' }),
     function(req, res) {
         res.redirect('/account');
-    }
-);
+    });
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/')
+}
 
 function getSerialazablePlayers() {
     return (players
