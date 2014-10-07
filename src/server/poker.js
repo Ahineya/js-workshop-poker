@@ -18,16 +18,10 @@ var Game = require('./modules/game.js');
 var config = require('./config.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
 
 mongoose.connect(config.mongodb);
 
-var User = mongoose.model('User', {
-    oauthID: Number,
-    name: String,
-    created: Date,
-    coins: Number
-});
+var User = require('./modules/User.js');
 
 passport.serializeUser(function(user, done) {
     console.log('serializeUser: ' + user._id);
@@ -41,35 +35,7 @@ passport.deserializeUser(function(id, done) {
     })
 });
 
-passport.use(new FacebookStrategy({
-        clientID: config.oauth.facebook.clientID,
-        clientSecret: config.oauth.facebook.clientSecret,
-        callbackURL: config.oauth.facebook.callbackURL
-    },
-    function(accessToken, refreshToken, profile, done) {
-        User.findOne({ oauthID: profile.id }, function(err, user) {
-            if(err) { console.log(err); }
-            if (!err && user != null) {
-                done(null, user);
-            } else {
-                user = new User({
-                    oauthID: profile.id,
-                    name: profile.displayName,
-                    created: Date.now(),
-                    coins: 1000
-                });
-                user.save(function(err) {
-                    if(err) {
-                        console.log(err);
-                    } else {
-                        console.log("saving user ...");
-                        done(null, user);
-                    }
-                });
-            }
-        });
-    }
-));
+passport.use( require('./modules/Passport.js').Facebook(config) );
 
 deck.shuffle();
 
@@ -99,13 +65,23 @@ var io = require('socket.io')(server);
 app.get('/', function(req, res){
     var data = {};
     if (req.isAuthenticated()) {
-        data = req.user;
+        res.redirect('/game');
     }
-    res.render('index', {user: data});
+    res.render('index');
 });
 
 app.get('/auth', function(req, res) {
     res.render('auth');
+});
+
+app.get('/game', ensureAuthenticated, function(req, res){
+    User.findById(req.session.passport.user, function(err, user) {
+        if(err) {
+            console.log(err);
+        } else {
+            res.render('game', { user: user});
+        }
+    });
 });
 
 app.get('/account', ensureAuthenticated, function(req, res){
@@ -126,7 +102,7 @@ app.get('/auth/facebook',
 app.get('/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/' }),
     function(req, res) {
-        res.redirect('/account');
+        res.redirect('/game');
     });
 app.get('/logout', function(req, res){
     req.logout();
