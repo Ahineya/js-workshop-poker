@@ -19,7 +19,15 @@ var config = require('./config.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
 
+var MongoStore = require('connect-mongo')(session);
+var passportSocketIo = require("passport.socketio");
+
 mongoose.connect(config.mongodb);
+
+var mongoStore = new MongoStore({
+    db : 'js-workshop-poker',
+    mongoose_connection: mongoose.connections[0]
+});
 
 var User = require('./modules/User.js');
 
@@ -46,13 +54,15 @@ app.set('views', __dirname + '/../../public');
 app.use(morgan('combined', {
     skip: function (req, res) { return res.statusCode < 400 }
 }));
+
 app.use(cookieParser());
 app.use(bodyParser());
 app.use(methodOverride());
 app.use(session({
     secret: 'js-workshop-poker',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: mongoStore
 }));
 
 app.use(passport.initialize());
@@ -61,58 +71,7 @@ app.use(passport.session());
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-//We need to use router here
-app.get('/', function(req, res){
-    var data = {};
-    if (req.isAuthenticated()) {
-        res.redirect('/game');
-    }
-    res.render('index');
-});
-
-app.get('/auth', function(req, res) {
-    res.render('auth');
-});
-
-app.get('/game', ensureAuthenticated, function(req, res){
-    User.findById(req.session.passport.user, function(err, user) {
-        if(err) {
-            console.log(err);
-        } else {
-            res.render('game', { user: user});
-        }
-    });
-});
-
-app.get('/account', ensureAuthenticated, function(req, res){
-    User.findById(req.session.passport.user, function(err, user) {
-        if(err) {
-            console.log(err);
-        } else {
-            res.render('account', { user: user});
-        }
-    });
-});
-
-app.get('/auth/facebook',
-    passport.authenticate('facebook'),
-    function(req, res){
-    });
-
-app.get('/auth/facebook/callback',
-    passport.authenticate('facebook', { failureRedirect: '/' }),
-    function(req, res) {
-        res.redirect('/game');
-    });
-app.get('/logout', function(req, res){
-    req.logout();
-    res.redirect('/');
-});
-
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    res.redirect('/')
-}
+require('./routes.js')(app, passport, User);
 
 function getSerialazablePlayers() {
     return (players
@@ -126,19 +85,45 @@ function getSerialazablePlayers() {
         }))
 }
 
+io.use(passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key:         'connect.sid',
+    secret:      'js-workshop-poker',
+    store:       mongoStore,
+    success:     onAuthorizeSuccess,
+    fail:        onAuthorizeFail
+}));
+
+function onAuthorizeSuccess(data, accept){
+    console.log('successful connection to socket.io');
+
+    accept(null, true);
+
+}
+
+function onAuthorizeFail(data, message, error, accept){
+    if(error)
+        throw new Error(message);
+    console.log('failed connection to socket.io:', message);
+
+    accept(null, false);
+
+}
+
 io.on('connection', function(socket) {
 
     console.log("Connected: ", socket.id);
+    console.log(socket.request.user.logged_in);
 
     var player = {
-        name: socket.id,
+        name: socket.request.user.name,
         id: socket.id,
-        coins: 100
+        coins: socket.request.user.coins
     };
 
     socket.emit('yourData', player);
 
-    player.socket= socket;
+    player.socket = socket;
     players.add(player);
 
     socket.emit(
