@@ -59,7 +59,7 @@ module.exports = function() {
             );
 
             player.socket.on(
-                constants.EVENTS.SERVER.I_TURN,
+                constants.EVENTS.CLIENT.I_TURN,
                 _processTurn
             )
 

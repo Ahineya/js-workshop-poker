@@ -1,7 +1,7 @@
 {
   "name": "jsw",
   "version": "0.0.1",
-  "description": "Javascript workshop poker boilerplate",
+  "description": "Javascript workshop poker",
   "main": "src/server/poker.js",
   "scripts": {
     "test": "grunt test",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ahineya/js-workshop-poker-boilerplate.git"
+    "url": "https://github.com/Ahineya/js-workshop-poker.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Ahineya/js-workshop-poker-boilerplate/issues"
+    "url": "https://github.com/Ahineya/js-workshop-poker/issues"
   },
-  "homepage": "https://github.com/Ahineya/js-workshop-poker-boilerplate",
+  "homepage": "https://github.com/Ahineya/js-workshop-poker",
   "devDependencies": {
     "chai": "^1.9.1",
     "concurrent": "^0.3.2",

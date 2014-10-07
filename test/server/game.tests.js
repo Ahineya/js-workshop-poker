@@ -13,9 +13,11 @@ describe('Game tests', function() {
 
     var socket = {
         id: "testId",
-        emit: sinon.spy(),
+        emit: function () {},
         on: sinon.stub()
     };
+
+    sinon.stub(socket, 'emit');
 
     socket.on.withArgs(constants.EVENTS.CLIENT.I_TURN).callsArgWith(1, [{
         turn: {},
@@ -102,6 +104,22 @@ describe('Game tests', function() {
         });
 
         assert(allListenersAdded, 'all i_turn listeners have been added');
+    });
+
+    xit('should send your turn event if params in turn of current player are correct', function() {
+        game.addPlayers(players);
+        game.start();
+        var currentPlayer = game.players.getPlayers()[1];
+        currentPlayer.socket.emit.restore();
+        sinon.stub(currentPlayer.socket, 'emit', function (event) {
+            if (event == constants.EVENTS.CLIENT.I_TURN) {
+                currentPlayer.socket.on();
+            }
+        });
+        currentPlayer.socket.emit(constants.EVENTS.CLIENT.I_TURN);
+        assert(game.players.getPlayers()[2].socket.emit.lastCall.args[0] === constants.EVENTS.SERVER.YOUR_TURN,
+            'send message to next player to make turn');
+
     });
 
 
