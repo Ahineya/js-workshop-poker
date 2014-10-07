@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var methodOverride = require('method-override');
+var morgan = require('morgan');
 
 var Deck = require('./modules/deck.js');
 var deck = new Deck();
@@ -19,11 +20,25 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 
-passport.serializeUser(function(user, done) {
-    done(null, user);
+mongoose.connect(config.mongodb);
+
+var User = mongoose.model('User', {
+    oauthID: Number,
+    name: String,
+    created: Date,
+    coins: Number
 });
-passport.deserializeUser(function(obj, done) {
-    done(null, obj);
+
+passport.serializeUser(function(user, done) {
+    console.log('serializeUser: ' + user._id);
+    done(null, user._id);
+});
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err, user){
+        console.log(user);
+        if(!err) done(null, user);
+        else done(err, null);
+    })
 });
 
 passport.use(new FacebookStrategy({
@@ -32,8 +47,26 @@ passport.use(new FacebookStrategy({
         callbackURL: config.oauth.facebook.callbackURL
     },
     function(accessToken, refreshToken, profile, done) {
-        process.nextTick(function () {
-            return done(null, profile);
+        User.findOne({ oauthID: profile.id }, function(err, user) {
+            if(err) { console.log(err); }
+            if (!err && user != null) {
+                done(null, user);
+            } else {
+                user = new User({
+                    oauthID: profile.id,
+                    name: profile.displayName,
+                    created: Date.now(),
+                    coins: 1000
+                });
+                user.save(function(err) {
+                    if(err) {
+                        console.log(err);
+                    } else {
+                        console.log("saving user ...");
+                        done(null, user);
+                    }
+                });
+            }
         });
     }
 ));
@@ -44,10 +77,17 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/../../public'));
 app.set('views', __dirname + '/../../public');
 
+app.use(morgan('combined', {
+    skip: function (req, res) { return res.statusCode < 400 }
+}));
 app.use(cookieParser());
 app.use(bodyParser());
 app.use(methodOverride());
-app.use(session({ secret: 'js-workshop-poker' }));
+app.use(session({
+    secret: 'js-workshop-poker',
+    resave: true,
+    saveUninitialized: true
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -68,13 +108,15 @@ app.get('/auth', function(req, res) {
     res.render('auth');
 });
 
-app.get('/account',
-    ensureAuthenticated,
-    function(req, res) {
-        console.log(req.user);
-        res.render('account', {user: req.user});
-    }
-);
+app.get('/account', ensureAuthenticated, function(req, res){
+    User.findById(req.session.passport.user, function(err, user) {
+        if(err) {
+            console.log(err);
+        } else {
+            res.render('account', { user: user});
+        }
+    });
+});
 
 app.get('/auth/facebook',
     passport.authenticate('facebook'),

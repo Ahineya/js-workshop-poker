@@ -1,10 +1,11 @@
 var config = {
+    mongodb: 'mongodb://jspoker:jspoker@ds043350.mongolab.com:43350/js-workshop-poker',
     oauth: {
         facebook: {
             clientID: '1473170869614770',
             clientSecret: '4e5a8216854bb3ed0d2546e647cac37e',
             callbackURL: 'http://local.foo.com:8080/auth/facebook/callback'
-        },
+        }/*,
         twitter: {
             consumerKey: 'get_your_own',
             consumerSecret: 'get_your_own',
@@ -18,7 +19,7 @@ var config = {
         google: {
             returnURL: 'http://127.0.0.1/auth/google/callback',
             realm: 'http://127.0.0.1:1337'
-        }
+        }*/
     }
 
 };
