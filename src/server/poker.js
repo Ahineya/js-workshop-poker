@@ -1,4 +1,6 @@
 var express = require('express');
+var constants = require('../common/constants.js');
+
 var app = express();
 
 var bodyParser = require('body-parser');
@@ -121,20 +123,22 @@ io.on('connection', function(socket) {
         coins: socket.request.user.coins
     };
 
-    socket.emit('yourData', player);
+    socket.emit(constants.EVENTS.SERVER.YOUR_DATA, player);
 
     player.socket = socket;
     players.add(player);
 
+/*
     socket.emit(
         'playersList',
         getSerialazablePlayers()
     );
+*/
 
-    socket.broadcast.emit(
+/*    socket.broadcast.emit(
         'playersList',
         getSerialazablePlayers()
-    );
+    );*/
 
     if(players.count() === 3) {
         var game = new Game();

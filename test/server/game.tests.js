@@ -1,5 +1,6 @@
 var Game = require('../../src/server/modules/game.js');
 var deck = new require('../../src/server/modules/deck.js');
+var constants = require('../../src/common/constants.js');
 var chai = require('chai');
 var sinon = require('sinon');
 var _ = require('lodash');
@@ -12,25 +13,31 @@ describe('Game tests', function() {
 
     var socket = {
         id: "testId",
-        emit: sinon.spy()
+        emit: sinon.spy(),
+        on: sinon.stub()
     };
+
+    socket.on.withArgs(constants.EVENTS.CLIENT.I_TURN).callsArgWith(1, [{
+        turn: {},
+        bet: {}
+    }]);
 
     var players = [
         {
             name: "test1",
-            socket: socket,
+            socket: _.cloneDeep(socket),
             id: socket.id,
             coins: 100
         },
         {
             name: "test2",
-            socket: socket,
+            socket: _.cloneDeep(socket),
             id: socket.id,
             coins: 100
         },
         {
             name: "test3",
-            socket: socket,
+            socket: _.cloneDeep(socket),
             id: socket.id,
             coins: 100
         }
@@ -80,6 +87,21 @@ describe('Game tests', function() {
 
         assert.equal(game.getBank(), players.length, 'there are correct amount of coins in bank after ante');
 
+    });
+
+    it('should add socket i_turn listener', function() {
+        game.addPlayers(players);
+        game.start();
+
+        var allListenersAdded = true;
+
+        game.players.getPlayers().forEach(function(player) {
+            if (!player.socket.on.called) {
+                allListenersAdded = false;
+            }
+        });
+
+        assert(allListenersAdded, 'all i_turn listeners have been added');
     });
 
 

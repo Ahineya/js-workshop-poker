@@ -75,7 +75,10 @@ module.exports = function(grunt) {
                 ]
             },
             js: {
-                files: [{expand: true, cwd: 'src/client/js', src: ['**'], dest: 'public/js'}]
+                files: [
+                    {expand: true, cwd: 'src/client/js', src: ['**'], dest: 'public/js'},
+                    {expand: true, cwd: 'src/common', src: ['constants.js'], dest: 'public/js'}
+                ]
             },
             ejs: {files:[{expand: true, cwd: 'src/client/', src: ['**/*.ejs'], dest: 'public/'}]},
             polymer: {
@@ -84,6 +87,14 @@ module.exports = function(grunt) {
 
         },
         watch: {
+            common: {
+                files: ['src/common/constants.js'],
+                tasks: ['jshint', 'karma','copy:js'],
+                options: {
+                    spawn: false,
+                    livereload: true
+                }
+            },
             scripts: {
                 files: ['src/client/**/*.js'],
                 tasks: ['jshint', 'karma','copy:js'],

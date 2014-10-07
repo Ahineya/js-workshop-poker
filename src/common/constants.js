@@ -1,11 +1,15 @@
-(function (globals) {
+(function (exports) {
     var EVENTS = {
-        START_GAME: 'gameStart',
-        YOUR_DATA: 'yourData',
-        YOUR_TURN: 'yourTurn',
-        I_TURN: 'iTurn',
-        ROUND_ENDS: 'roundEnds',
-        I_EXCHANGE_CARDS: 'iExchangeCards'
+        CLIENT: {
+            I_TURN: 'iTurn',
+            I_EXCHANGE_CARDS: 'iExchangeCards'
+        },
+        SERVER: {
+            START_GAME: 'gameStart',
+            YOUR_DATA: 'yourData',
+            YOUR_TURN: 'yourTurn',
+            ROUND_ENDS: 'roundEnds'
+        }
     };
     var CARDS = [
         '2H', '3H', '4H', '5H', '6H', '7H', '8H', '9H', '10H', 'JH', 'QH', 'KH', 'AH',
@@ -27,9 +31,10 @@
         RAISE: 'raise'
     };
     var BETS = [1, 5, 10, 50, 100, 500];
-    globals.TURNS = TURNS;
-    globals.BETS = BETS;
-    globals.CARD_SUITS = CARD_SUITS;
-    globals.CARDS = CARDS;
-    globals.EVENTS = EVENTS;
-})(window);
+    exports.TURNS = TURNS;
+    exports.BETS = BETS;
+    exports.CARD_SUITS = CARD_SUITS;
+    exports.CARDS = CARDS;
+    exports.EVENTS = EVENTS;
+
+})(typeof exports === 'undefined'? window : exports);

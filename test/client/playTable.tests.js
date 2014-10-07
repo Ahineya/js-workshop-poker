@@ -7,15 +7,15 @@ document.addEventListener('polymer-ready', function () {
         });
 
         it('should wait for start of game', function () {
-            expect(socketWaitForGameStartStub.firstCall.args[0]).toEqual(EVENTS.START_GAME);
+            expect(socketWaitForGameStartStub.firstCall.args[0]).toEqual(EVENTS.SERVER.START_GAME);
         });
 
         it('should wait for getting my hand of game', function () {
-            expect(socketWaitForGameStartStub.secondCall.args[0]).toEqual(EVENTS.YOUR_DATA);
+            expect(socketWaitForGameStartStub.secondCall.args[0]).toEqual(EVENTS.SERVER.YOUR_DATA);
         });
 
         it('should wait for turn in game', function () {
-            expect(socketWaitForGameStartStub.thirdCall.args[0]).toEqual(EVENTS.YOUR_TURN);
+            expect(socketWaitForGameStartStub.thirdCall.args[0]).toEqual(EVENTS.SERVER.YOUR_TURN);
         });
 
 
@@ -131,7 +131,7 @@ document.addEventListener('polymer-ready', function () {
             playTable.$.playerOption.value = TURNS.RAISE;
             playTable.$.playerBet.value = BETS[3];
             eventFire(playTable.$.playerBetButton, 'click');
-            expect(socketSendTurnStub.firstCall.args[0]).toEqual(EVENTS.I_TURN);
+            expect(socketSendTurnStub.firstCall.args[0]).toEqual(EVENTS.CLIENT.I_TURN);
             expect(socketSendTurnStub.firstCall.args[1]).toEqual({
                 turn: TURNS.RAISE,
                 bet: BETS[3]

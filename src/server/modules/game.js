@@ -1,6 +1,7 @@
 var Players = require('./players.js');
 var Deck = require('./deck.js');
 var _ = require('lodash');
+var constants = require('../../common/constants.js');
 
 module.exports = function() {
     var players = new Players();
@@ -20,6 +21,8 @@ module.exports = function() {
     var turn = 1;
 
     var dealer;
+    var currentPlayerTurn;
+    var currentPlayer;
 
     function _addPlayers(playersArr) {
         playersArr.forEach(function(player) {
@@ -37,30 +40,50 @@ module.exports = function() {
             player.hand = deck.give(5);
         });
 
-        dealer = players.getPlayers()[_.random(players.length-1)];
+        currentPlayerTurn = _.random(players.length-1);
+        currentPlayer = players.getPlayers()[currentPlayerTurn];
 
         gameState = {
             players: getSerialazablePlayers(players),
             bank: bank,
             turn: turn,
-            dealer: dealer.id
+            currentPlayerId: currentPlayer.id
         };
 
         players.forEach(function(player) {
             player.socket.emit(
-                'gameStart',
+                constants.EVENTS.SERVER.START_GAME,
                 _.extend({}, gameState, {
                     players: cutGameStateForPlayer(_.cloneDeep(gameState), player.id)
                 })
+            );
+
+            player.socket.on(
+                constants.EVENTS.SERVER.I_TURN,
+                _processTurn
             )
+
         });
 
         stage = STAGES.SALES;
 
-        dealer.socket.emit('yourTurn', {
+        currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
             turnOptions: ['call', 'fold', 'raise']
         });
 
+    }
+
+    function _processTurn(playerTurnData) {
+        if (playerTurnData in constants.TURNS) {
+            /**
+             *
+             * socket.emit(EVENTS.CLIENT.I_TURN, {
+                turn: this.$.playerOption.value,
+                bet: parseInt(this.$.playerBet.value)
+                });
+             */
+
+        }
     }
 
     function _ante() {

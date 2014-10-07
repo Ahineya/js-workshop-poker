@@ -7,9 +7,9 @@
         },
         ready: function() {
             this.cancelUnbindAll();
-            socket.on(globals.EVENTS.START_GAME, this.onStartGame.bind(this));
-            socket.on(globals.EVENTS.YOUR_DATA, this.onYourData.bind(this));
-            socket.on(globals.EVENTS.YOUR_TURN, this.onYourTurn.bind(this));
+            socket.on(globals.EVENTS.SERVER.START_GAME, this.onStartGame.bind(this));
+            socket.on(globals.EVENTS.SERVER.YOUR_DATA, this.onYourData.bind(this));
+            socket.on(globals.EVENTS.SERVER.YOUR_TURN, this.onYourTurn.bind(this));
         },
         attached: function () {
         },
@@ -83,7 +83,7 @@
             this.$.playerMenu.classList.add('visible');
         },
         onBetClick: function () {
-            socket.emit(EVENTS.I_TURN, {
+            socket.emit(EVENTS.CLIENT.I_TURN, {
                 turn: this.$.playerOption.value,
                 bet: parseInt(this.$.playerBet.value)
             });
