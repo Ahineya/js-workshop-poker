@@ -9,19 +9,12 @@ module.exports = function() {
     var bank = 0;
     var gameState = {};
 
-    var STAGES = {
-        INIT: "init",
-        SALES: "sales",
-        CARDS_CHANGE: "cards_change",
-        TURN_END: "turn_end"
-    };
-
-    var stage = STAGES.INIT;
+    var stage = constants.STAGES.FIRST_ROUND;
 
     var turn = 1;
 
     var dealer;
-    var currentPlayerTurn;
+    var currentPlayerIndex;
     var currentPlayer;
 
     function _addPlayers(playersArr) {
@@ -40,8 +33,8 @@ module.exports = function() {
             player.hand = deck.give(5);
         });
 
-        currentPlayerTurn = _.random(players.length-1);
-        currentPlayer = players.getPlayers()[currentPlayerTurn];
+        currentPlayerIndex = _.random(players.length-1);
+        currentPlayer = players.getPlayers()[currentPlayerIndex];
 
         gameState = {
             players: getSerialazablePlayers(players),
@@ -65,24 +58,33 @@ module.exports = function() {
 
         });
 
-        stage = STAGES.SALES;
+        stage = constants.STAGES.FIRST_ROUND;
 
         currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
-            turnOptions: ['call', 'fold', 'raise']
+            turnOptions: constants.CARD_TURNS_MAP[stage]
         });
 
     }
 
     function _processTurn(playerTurnData) {
-        if (playerTurnData in constants.TURNS) {
-            /**
-             *
-             * socket.emit(EVENTS.CLIENT.I_TURN, {
-                turn: this.$.playerOption.value,
-                bet: parseInt(this.$.playerBet.value)
-                });
-             */
-
+        if (playerTurnData.turn in constants.TURNS) {
+            var turnOptions;
+            if (currentPlayerIndex >= players.length) {
+                if (stage == constants.STAGES.FIRST_ROUND) {
+                    stage = constants.STAGES.REPLACEMENT;
+                }
+                if (stage == constants.STAGES.REPLACEMENT) {
+                    stage = constants.STAGES.SHOWDOWN;
+                }
+                turnOptions = constants.CARD_TURNS_MAP[stage];
+            } else {
+                turnOptions = constants.CARD_TURNS_MAP[playerTurnData.turn];
+            }
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            currentPlayer = players.getPlayers()[currentPlayerIndex];
+            currentPlayer.socket.emit(EVENTS.SERVER.YOUR_TURN, {
+                turnOptions: turnOptions
+            });
         }
     }
 
@@ -103,7 +105,9 @@ module.exports = function() {
         players: players,
         start: _start,
         getBank: _getBank,
-        getCurrentStage: _getCurrentStage
+        getCurrentStage: _getCurrentStage,
+        processTurn: _processTurn,
+        currentPlayerIndex: currentPlayerIndex
     }
 
 };

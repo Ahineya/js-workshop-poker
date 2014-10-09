@@ -1,0 +1,29 @@
+<polymer-element name="login-el">
+    <template>
+        <style>
+            .login {
+                width: 500px;
+                height: 250px;
+                margin: 0 auto;
+                top: 20%;
+                background-color: lightgray;
+                text-align: center;
+                padding: 100px;
+                font-size: 30px;
+            }
+            button {
+                background-color: lightblue;
+                font-size: 30px;
+            }
+        </style>
+        <p class="login">
+            <span>You are not logged in. Please login with </span><br/>
+            <a href="/auth/facebook"><button>Facebook</button></a>
+        </p>
+
+        </template>
+    <script>
+        Polymer({
+        });
+    </script>
+</polymer-element>

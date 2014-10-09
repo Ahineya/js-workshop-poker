@@ -30,11 +30,26 @@
         FOLD: 'fold',
         RAISE: 'raise'
     };
+    var STAGES = {
+        FIRST_ROUND: "first_round",
+        REPLACEMENT: "Replacements ", //second round
+        SHOWDOWN: 'Showdown', //third last round
+        CARDS_CHANGE: "cards_change",
+        TURN_END: "turn_end"
+    };
+    var CARD_TURNS_MAP = {};
+    CARD_TURNS_MAP[STAGES.FIRST_ROUND] = [TURNS.PASS, TURNS.BET, TURNS.FOLD];
+    CARD_TURNS_MAP[TURNS.PASS] = [TURNS.PASS, TURNS.BET];
+    CARD_TURNS_MAP[TURNS.BET] = [TURNS.PASS, TURNS.CALL, TURNS.RAISE];
+    CARD_TURNS_MAP[STAGES.REPLACEMENT] = [TURNS.CALL, TURNS.FOLD];
+
     var BETS = [1, 5, 10, 50, 100, 500];
     exports.TURNS = TURNS;
+    exports.CARD_TURNS_MAP = CARD_TURNS_MAP;
     exports.BETS = BETS;
     exports.CARD_SUITS = CARD_SUITS;
     exports.CARDS = CARDS;
     exports.EVENTS = EVENTS;
+    exports.STAGES = STAGES;
 
 })(typeof exports === 'undefined'? window : exports);
