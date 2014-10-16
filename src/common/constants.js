@@ -9,7 +9,9 @@
             YOUR_DATA: 'yourData',
             YOUR_TURN: 'yourTurn',
             ROUND_ENDS: 'roundEnds',
-            GAME_INFO: 'game_info'
+            GAME_INFO: 'game_info',
+            REPLACEMENT_TURN: 'replacementTurn',
+            SHOWDOWN: 'showdown'
         }
     };
     var CARDS = [
@@ -32,18 +34,23 @@
         RAISE: 'raise'
     };
     var STAGES = {
-        FIRST_ROUND: "first_round",
-        REPLACEMENT: "Replacements ", //second round
+        FIRST_ROUND: "first_round", //first round
+        REPLACEMENT: "Replacements", //replacements
+        SECOND_ROUND: "second_round", //second round
         SHOWDOWN: 'Showdown', //third last round
-        CARDS_CHANGE: "cards_change",
-        TURN_END: "turn_end"
+        SUBSTAGE_AFTER_DEALER: "after_dealer"
     };
+
+    var STAGES_ORDER = [STAGES.FIRST_ROUND, STAGES.REPLACEMENT,STAGES.SECOND_ROUND,STAGES.SHOWDOWN];
+
     var CARD_TURNS_MAP = {};
     CARD_TURNS_MAP[STAGES.FIRST_ROUND] = [TURNS.PASS, TURNS.BET, TURNS.FOLD];
-    CARD_TURNS_MAP[TURNS.PASS] = [TURNS.PASS, TURNS.BET];
-    CARD_TURNS_MAP[TURNS.BET] = [TURNS.PASS, TURNS.CALL, TURNS.RAISE];
-    CARD_TURNS_MAP[TURNS.CALL] = [TURNS.PASS, TURNS.CALL, TURNS.RAISE];
-    CARD_TURNS_MAP[STAGES.REPLACEMENT] = [TURNS.CALL, TURNS.FOLD];
+    CARD_TURNS_MAP[STAGES.SECOND_ROUND] = [TURNS.PASS, TURNS.BET, TURNS.FOLD];
+    CARD_TURNS_MAP[TURNS.PASS] = [TURNS.PASS, TURNS.BET, TURNS.FOLD];
+    CARD_TURNS_MAP[TURNS.RAISE] = [TURNS.CALL, TURNS.RAISE, TURNS.FOLD];
+    CARD_TURNS_MAP[TURNS.BET] = [TURNS.FOLD, TURNS.CALL, TURNS.RAISE];
+    CARD_TURNS_MAP[TURNS.CALL] = [TURNS.FOLD, TURNS.CALL, TURNS.RAISE];
+    CARD_TURNS_MAP[STAGES.SUBSTAGE_AFTER_DEALER] = [TURNS.CALL, TURNS.FOLD];
 
     var BETS = [1, 5, 10, 50, 100, 500];
     exports.TURNS = TURNS;
@@ -53,5 +60,6 @@
     exports.CARDS = CARDS;
     exports.EVENTS = EVENTS;
     exports.STAGES = STAGES;
+    exports.STAGES_ORDER = STAGES_ORDER;
 
 })(typeof exports === 'undefined'? window : exports);

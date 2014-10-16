@@ -10,7 +10,9 @@
             socket.on(globals.EVENTS.SERVER.START_GAME, this.onStartGame.bind(this));
             socket.on(globals.EVENTS.SERVER.YOUR_DATA, this.onYourData.bind(this));
             socket.on(globals.EVENTS.SERVER.YOUR_TURN, this.onYourTurn.bind(this));
+            socket.on(globals.EVENTS.SERVER.REPLACEMENT_TURN, this.onReplacementTurn.bind(this));
             socket.on(globals.EVENTS.SERVER.GAME_INFO, this.onGameInfo.bind(this));
+            socket.on(globals.EVENTS.SERVER.SHOWDOWN, this.onShowdown.bind(this));
         },
         attached: function () {
         },
@@ -86,6 +88,12 @@
             }
             this.$.modalMask.classList.remove('visible');
             this.$.playerMenu.classList.add('visible');
+        },
+        onReplacementTurn: function(gameData) {
+            console.log('replacement: ',gameData);
+        },
+        onShowdown: function(gameData) {
+            console.log('showdown: ',gameData);
         },
         onBetClick: function () {
             socket.emit(EVENTS.CLIENT.I_TURN, {

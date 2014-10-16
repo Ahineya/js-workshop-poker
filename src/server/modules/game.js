@@ -17,6 +17,8 @@ module.exports = function() {
     var currentPlayerIndex;
     var currentPlayer;
 
+    var currentTurnsMap = constants.CARD_TURNS_MAP[gameState.stage];
+
     var turnIndex = 0;
 
     var bets = [1,1,1];
@@ -76,24 +78,104 @@ module.exports = function() {
         if (_.contains(constants.TURNS, playerTurnData.turn)) {
 
             var turnOptions;
+            var bet;
 
             //TODO: Process turn itself here
 
-            if (playerTurnData.turn === constants.TURNS.BET) {
-                bets[currentPlayerIndex] += playerTurnData.bet;
-                players.bet(currentPlayerIndex, playerTurnData.bet);
+            if ( (gameState.stage === constants.STAGES.FIRST_ROUND) || (gameState.stage === constants.STAGES.SECOND_ROUND) ) {
+                switch ( playerTurnData.turn ) {
+                    case constants.TURNS.BET:
+                        bet = playerTurnData.bet;
+                        bets[currentPlayerIndex] += bet;
+                        players.bet(currentPlayerIndex, bet);
+
+                        currentTurnsMap = constants.CARD_TURNS_MAP[playerTurnData.turn];
+
+                        break;
+                    case constants.TURNS.PASS:
+                        bet = 0;
+                        break;
+                    case constants.TURNS.FOLD:
+                        //Bet of fold player is 0
+                        bet = 0;
+                        bets[currentPlayerIndex] = 0;
+                        break;
+                    case constants.TURNS.RAISE:
+
+                        bet = bets[_prevPlayer(currentPlayerIndex)] - bets[currentPlayerIndex] + playerTurnData.bet;
+                        bets[currentPlayerIndex] += bet;
+
+                        players.bet(currentPlayerIndex, bet);
+
+                        currentTurnsMap = constants.CARD_TURNS_MAP[playerTurnData.turn];
+                        break;
+                    case constants.TURNS.CALL:
+                        bet = 0;
+                        if (bets[currentPlayerIndex] < bets[_prevPlayer(currentPlayerIndex)]) {
+                            bet = bets[_prevPlayer(currentPlayerIndex)] - bets[currentPlayerIndex];
+                            bets[currentPlayerIndex] += bet;
+                            players.bet(currentPlayerIndex, bet);
+
+                            currentTurnsMap = constants.CARD_TURNS_MAP[playerTurnData.turn];
+                        }
+                        break;
+                    default:
+                }
+
+                bank += bet;
+
+            } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
+                //TODO: manage replacements here
             }
 
+            if (turnIndex >= players.count() - 1) {
+                currentTurnsMap = constants.CARD_TURNS_MAP[constants.STAGES.SUBSTAGE_AFTER_DEALER];
+            }
             turnIndex++;
 
-            gameState.players = getSerialazablePlayers(players);
+            //TODO: process game state here
+            if (turnIndex >= players.count()*2 - 1) {
+                turnIndex = 0;
+                currentPlayerIndex = _nextPlayer(currentPlayerIndex); //Skip dealer before next stage
 
-            currentPlayerIndex = _nextPlayer();
+                gameState.stage = constants.STAGES_ORDER[constants.STAGES_ORDER.indexOf(gameState.stage) + 1];
+            }
+
+            turnOptions = currentTurnsMap;
+
+            _.extend(gameState, {
+                players: getSerialazablePlayers(players),
+                bank: bank
+            });
+
+            currentPlayerIndex = _nextPlayer(currentPlayerIndex);
+
+            //We need to skip fold players.
+            if (bets[currentPlayerIndex] === 0) {
+                currentPlayerIndex = _nextPlayer(currentPlayerIndex);
+                if(bets[currentPlayerIndex] === 0) {
+                    gameState.stage = constants.STAGES.SHOWDOWN;
+                }
+            }
+
             currentPlayer = players.getPlayers()[currentPlayerIndex];
 
-            currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
-                turnOptions: turnOptions
-            });
+            if ( (gameState.stage === constants.STAGES.FIRST_ROUND) || (gameState.stage === constants.STAGES.SECOND_ROUND) ) {
+                currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
+                    turnOptions: turnOptions
+                });
+            } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
+                currentPlayer.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN);
+            } else if (gameState.stage === constants.STAGES.SHOWDOWN) {
+                players.forEach(function(player) {
+                    player.socket.emit(constants.EVENTS.SERVER.SHOWDOWN, {
+                        winner: 0,
+                        combinations: {
+                            //TODO: find out coolest possible object here :)
+                        }
+                    });
+                });
+            }
 
             players.forEach(function(player) {
                 player.socket.emit(
@@ -105,34 +187,6 @@ module.exports = function() {
             });
 
         }
-
-            turnIndex++;
-        //console.log(currentPlayer.socket.id, playerTurnData.id);
-            /*var turnOptions;
-            if (currentPlayerIndex >= players.getPlayers().length -1 ) {
-                if (gameState.stage == constants.STAGES.FIRST_ROUND) {
-                    gameState.stage = constants.STAGES.REPLACEMENT;
-                }
-                else if (gameState.stage == constants.STAGES.REPLACEMENT) {
-                    gameState.stage = constants.STAGES.SHOWDOWN;
-                }
-                turnOptions = constants.CARD_TURNS_MAP[gameState.stage];
-                currentPlayerIndex = -1;
-            } else {
-                turnOptions = constants.CARD_TURNS_MAP[playerTurnData.turn];
-            }
-            currentPlayerIndex++;
-            if (currentPlayerIndex == players.getPlayers().length) {
-                currentPlayerIndex = 0;
-            }
-
-            currentPlayer = players.getPlayers()[currentPlayerIndex];
-            currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
-                turnOptions: turnOptions
-            });*/
-
-
-
 
     }
 
@@ -148,14 +202,22 @@ module.exports = function() {
         return gameState.stage;
     }
 
-    function _nextPlayer() {
+    function _nextPlayer(currentPlayerIndex) {
         currentPlayerIndex++;
         if (currentPlayerIndex == players.getPlayers().length) {
             currentPlayerIndex = 0;
         }
 
         return currentPlayerIndex;
+    }
 
+    function _prevPlayer(currentPlayerIndex) {
+        currentPlayerIndex--;
+        if (currentPlayerIndex == -1) {
+            currentPlayerIndex = players.getPlayers().length - 1;
+        }
+
+        return currentPlayerIndex;
     }
 
     return {
