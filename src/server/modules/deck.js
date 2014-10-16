@@ -30,8 +30,10 @@ module.exports = function() {
         if (amount > deck.length) {
             amount = deck.length;
         }
+
         var hand = deck.slice(0, amount);
-        deck = deck.slice(0, deck.length - amount);
+        deck = deck.splice(amount, deck.length - amount);
+
         return hand;
     }
 
