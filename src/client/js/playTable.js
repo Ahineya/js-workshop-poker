@@ -63,6 +63,7 @@
             }
         },
         onYourTurn: function (data) {
+            console.log(data);
             while (this.$.playerOption.options.length > 0) {
                 this.$.playerOption.remove(0);
             }
