@@ -179,7 +179,7 @@ module.exports = function(grunt) {
 
                         nodemon.on('config:update', function () {
                             setTimeout(function() {
-                                require('open')('http://127.0.0.1:8080');
+                                require('open')('http://local.foo.com:8080');
                             }, 1000);
                         });
 

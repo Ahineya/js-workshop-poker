@@ -74,18 +74,6 @@ mongoose.connect(config.mongodb);
 
     require('./routes.js')(app, passport, User);
 
-    function getSerialazablePlayers() {
-        return (players
-            .getPlayers()
-            .map(function(item){
-                return {
-                    name: item.name,
-                    id: item.id,
-                    coins: item.coins
-                }
-            }))
-    }
-
     io.use(passportSocketIo.authorize({
         cookieParser: cookieParser,
         key:         'connect.sid',
