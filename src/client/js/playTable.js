@@ -10,6 +10,7 @@
             socket.on(globals.EVENTS.SERVER.START_GAME, this.onStartGame.bind(this));
             socket.on(globals.EVENTS.SERVER.YOUR_DATA, this.onYourData.bind(this));
             socket.on(globals.EVENTS.SERVER.YOUR_TURN, this.onYourTurn.bind(this));
+            socket.on(globals.EVENTS.SERVER.GAME_INFO, this.onGameInfo.bind(this));
         },
         attached: function () {
         },
@@ -30,6 +31,9 @@
                 return card.value + card.suite;
             }));
             this.generatePlayTableWithActions(data);
+        },
+        onGameInfo: function(gameData) {
+            console.log(gameData);
         },
         onYourData: function (data) {
             this.account =  data;
@@ -86,7 +90,8 @@
         onBetClick: function () {
             socket.emit(EVENTS.CLIENT.I_TURN, {
                 turn: this.$.playerOption.value,
-                bet: parseInt(this.$.playerBet.value)
+                bet: parseInt(this.$.playerBet.value),
+                id: this.account.id
             });
             this.$.modalMask.classList.add('visible');
             this.$.playerMenu.classList.remove('visible');

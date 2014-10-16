@@ -102,7 +102,7 @@ describe('Game tests', function() {
         assert(allListenersAdded, 'all i_turn listeners have been added');
     });
 
-    it('should send your turn event if params in turn of current player are correct', function() {
+    it('should send GAME_INFO event if params in turn of current player are correct', function() {
         var turnData = {
             turn: constants.TURNS.BET
         };
@@ -116,7 +116,7 @@ describe('Game tests', function() {
         game.currentPlayerIndex = 0;
         game.processTurn(turnData);
         var currentPlayer = game.players.getPlayers()[1];
-        assert(currentPlayer.socket.emit.lastCall.args[0] === constants.EVENTS.SERVER.YOUR_TURN,
+        assert(currentPlayer.socket.emit.lastCall.args[0] === constants.EVENTS.SERVER.GAME_INFO,
             'send message to next player to make turn');
     });
 

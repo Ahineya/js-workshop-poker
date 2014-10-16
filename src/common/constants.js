@@ -8,7 +8,8 @@
             START_GAME: 'gameStart',
             YOUR_DATA: 'yourData',
             YOUR_TURN: 'yourTurn',
-            ROUND_ENDS: 'roundEnds'
+            ROUND_ENDS: 'roundEnds',
+            GAME_INFO: 'game_info'
         }
     };
     var CARDS = [

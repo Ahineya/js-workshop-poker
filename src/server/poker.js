@@ -134,11 +134,19 @@ mongoose.connect(config.mongodb);
             game.start();
             console.log('game started!');
             console.log('current stage is: ' + game.getCurrentStage());
-        }
 
-        socket.on('test', function() {
-            console.log('Sockets are working');
-        });
+            socket.on('test', function() {
+                console.log('Sockets are working');
+
+                game = new Game();
+                game.addPlayers(players.getPlayers());
+                game.start();
+                console.log('game started!');
+                console.log('current stage is: ' + game.getCurrentStage());
+
+            });
+
+        }
 
     });
 

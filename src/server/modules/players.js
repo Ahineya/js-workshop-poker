@@ -54,6 +54,10 @@ module.exports = function() {
         return players.forEach(f);
     }
 
+    function _bet(playerIndex, amount) {
+        players[playerIndex].coins -= amount;
+    }
+
     return {
         add: _add,
         getPlayers: _getPlayers,
@@ -61,6 +65,7 @@ module.exports = function() {
         assignHand: _assignHand,
         count: _count,
         ante: _ante,
-        forEach: _forEach
+        forEach: _forEach,
+        bet: _bet
     }
 };

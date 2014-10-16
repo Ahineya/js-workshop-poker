@@ -17,6 +17,10 @@ module.exports = function() {
     var currentPlayerIndex;
     var currentPlayer;
 
+    var turnIndex = 0;
+
+    var bets = [1,1,1];
+
     function _addPlayers(playersArr) {
         playersArr.forEach(function(player) {
             players.add(player);
@@ -33,14 +37,15 @@ module.exports = function() {
             player.hand = deck.give(5);
         });
 
-        currentPlayerIndex = 0;//_.random(players.length-1);
+        currentPlayerIndex = _.random(players.length-1);
         currentPlayer = players.getPlayers()[currentPlayerIndex];
 
         _.extend(gameState, {
             players: getSerialazablePlayers(players),
             bank: bank,
             turn: turn,
-            currentPlayerId: currentPlayer.id
+            currentPlayerId: currentPlayer.id,
+            bets: bets
         });
 
         players.forEach(function(player) {
@@ -67,8 +72,43 @@ module.exports = function() {
     }
 
     function _processTurn(playerTurnData) {
+
         if (_.contains(constants.TURNS, playerTurnData.turn)) {
+
             var turnOptions;
+
+            //TODO: Process turn itself here
+
+            if (playerTurnData.turn === constants.TURNS.BET) {
+                bets[currentPlayerIndex] += playerTurnData.bet;
+                players.bet(currentPlayerIndex, playerTurnData.bet);
+            }
+
+            turnIndex++;
+
+            gameState.players = getSerialazablePlayers(players);
+
+            currentPlayerIndex = _nextPlayer();
+            currentPlayer = players.getPlayers()[currentPlayerIndex];
+
+            currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
+                turnOptions: turnOptions
+            });
+
+            players.forEach(function(player) {
+                player.socket.emit(
+                    constants.EVENTS.SERVER.GAME_INFO,
+                    _.extend({}, gameState, {
+                        players: cutGameStateForPlayer(_.cloneDeep(gameState), player.id)
+                    })
+                );
+            });
+
+        }
+
+            turnIndex++;
+        //console.log(currentPlayer.socket.id, playerTurnData.id);
+            /*var turnOptions;
             if (currentPlayerIndex >= players.getPlayers().length -1 ) {
                 if (gameState.stage == constants.STAGES.FIRST_ROUND) {
                     gameState.stage = constants.STAGES.REPLACEMENT;
@@ -89,8 +129,11 @@ module.exports = function() {
             currentPlayer = players.getPlayers()[currentPlayerIndex];
             currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
                 turnOptions: turnOptions
-            });
-        }
+            });*/
+
+
+
+
     }
 
     function _ante() {
@@ -103,6 +146,16 @@ module.exports = function() {
 
     function _getCurrentStage() {
         return gameState.stage;
+    }
+
+    function _nextPlayer() {
+        currentPlayerIndex++;
+        if (currentPlayerIndex == players.getPlayers().length) {
+            currentPlayerIndex = 0;
+        }
+
+        return currentPlayerIndex;
+
     }
 
     return {
