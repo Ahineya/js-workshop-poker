@@ -7,14 +7,6 @@ module.exports = (function() {
     var countedSuites;
     var countedValues;
 
-    function countValues(hand) {
-        return _.countBy(hand, 'value');
-    }
-
-    function countSuites(hand) {
-        return _.countBy(hand, 'suite');
-    }
-
     function cardsSort(hand) {
         return _.sortBy(hand, function(card) {
             return values.indexOf(card.value);
@@ -84,8 +76,8 @@ module.exports = (function() {
 
     function _findCombination(hand) {
 
-        countedSuites = countSuites(hand);
-        countedValues = countValues(hand);
+        countedSuites = _.countBy(hand, 'suite');
+        countedValues = _.countBy(hand, 'value');
         hand = cardsSort(hand);
 
         return (combinations.reduce(function(currentResult, combFunction) {
