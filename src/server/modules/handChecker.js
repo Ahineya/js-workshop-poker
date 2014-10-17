@@ -22,11 +22,11 @@ module.exports = (function() {
     }
 
     function isRoyalFlush(hand) {
-        return isStraight(hand) && isContainsEqualSuites() && _.contains(_.pluck(hand, "value"), "A");
+        return isStraightFlush(hand) && _.contains(_.pluck(hand, "value"), "A");
     }
 
     function isStraightFlush(hand) {
-        return isStraight(hand) && isContainsEqualSuites();
+        return isStraight(hand) && isFlush();
     }
 
     function isFourOfAKind() {
