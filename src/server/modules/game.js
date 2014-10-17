@@ -1,5 +1,6 @@
 var Players = require('./players.js');
 var Deck = require('./deck.js');
+var handChecker = require('./handChecker.js');
 var _ = require('lodash');
 var constants = require('../../common/constants.js');
 
@@ -37,6 +38,7 @@ module.exports = function() {
 
         players.forEach(function(player) {
             player.hand = deck.give(5);
+            //console.log(handChecker.findCombination(player.hand));
         });
 
         currentPlayerIndex = _.random(players.length-1);
