@@ -1,6 +1,6 @@
 document.addEventListener('polymer-ready', function () {
     describe('Play table tests', function () {
-        var playTable, socketWaitForGameStartStub, cards, account;
+        var playTable, socketWaitForGameStartStub, cards, account, gameData;
         beforeEach(function () {
             socketWaitForGameStartStub = pockerSandbox.stub(socket, 'on');
             playTable = new PlayTable();
@@ -57,7 +57,7 @@ document.addEventListener('polymer-ready', function () {
             playTable.onStartGame(cards);
             expect(generateCardStackStub.firstCall.args[0]).toEqual(['9D', '7D', '2S', 'AS', 'AC']);
         });
-        
+
         it('should generate other players hands', function () {
             var playerHand = document.createElement('div');
             for (var i = 0; i < 5; i++) {
@@ -138,6 +138,70 @@ document.addEventListener('polymer-ready', function () {
             });
         });
 
+        it('will show game info when it comes from server', function () {
+            playTable.onGameInfo(gameData);
+            var bets = gameData.bets;
+            for (var i = 0; i < gameData.players.length; i++) {
+                var player = gameData.players[i];
+                var gameInfo = player.name + '\'s last bet:' + bets[i];
+                expect(playTable.$.lastPlayersInfo.children[i].innerHTML).toEqual(gameInfo);
+            }
+            expect(playTable.$.gameBank.innerHTML).toEqual('' + gameData.bank);
+        });
+
+        it('ahould block player if he folds down', function () {
+            pockerSandbox.stub(socket, 'emit');
+            var yourTurnData = {
+                turnOptions: [TURNS.CALL, TURNS.FOLD],
+                playersTurn: [
+                    {
+                        id: '-tUTqde4QBlMEjZ_AAAB',
+                        turn: TURNS.BET,
+                        value: 5
+                    },
+                    {
+                        id: 'XfOZvcmKGjJCLAKdAAAC',
+                        turn: TURNS.PASS,
+                        value: null
+                    }
+                ]
+            };
+            playTable.onYourTurn(yourTurnData);
+            playTable.$.playerOption.value = TURNS.FOLD;
+            eventFire(playTable.$.playerBetButton, 'click');
+            expect(playTable.$.foldMask.classList.contains('visible')).toEqual(true);
+        });
+
+        gameData = {
+            'stage': 'first_round',
+            'players': [
+                {
+                    'name': 'Олег Гомозов',
+                    'id': 'yivlw3hHxBLXgy0hAAAA',
+                    'coins': 499,
+                    'hand': []},
+                {
+                    'name': 'Олег Гомозов',
+                    'id': 'tZEjE0DxtQB6mJ0aAAAB',
+                    'coins': 499,
+                    'hand': [
+                        {'value': '10', 'suite': 'C'},
+                        {'value': '6', 'suite': 'H'},
+                        {'value': '9', 'suite': 'S'},
+                        {'value': '7', 'suite': 'H'},
+                        {'value': 'Q', 'suite': 'S'}
+                    ]},
+                {
+                    'name': 'Олег Гомозов',
+                    'id': 'eVc7MilH6kdCFfOJAAAC',
+                    'coins': 499,
+                    'hand': []}
+            ],
+            'bank': 1503,
+            'turn': 1,
+            'currentPlayerId': 'yivlw3hHxBLXgy0hAAAA',
+            'bets': [501, 501, 501]
+        };
         account = {
             name: 'scjpCfmCsvzUbt3tAAAi',
             id: 'scjpCfmCsvzUbt3tAAAi',

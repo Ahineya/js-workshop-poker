@@ -35,7 +35,13 @@
             this.generatePlayTableWithActions(data);
         },
         onGameInfo: function(gameData) {
-            console.log(gameData);
+            var bets = gameData.bets;
+            for (var i = 0; i < gameData.players.length; i++) {
+                var player = gameData.players[i];
+                var gameInfo = player.name + '\'s last bet:' + bets[i];
+                this.$.lastPlayersInfo.children[i].innerHTML = gameInfo;
+            }
+            this.$.gameBank.innerHTML = gameData.bank;
         },
         onYourData: function (data) {
             this.account =  data;
@@ -69,7 +75,6 @@
             }
         },
         onYourTurn: function (data) {
-            console.log(data);
             while (this.$.playerOption.options.length > 0) {
                 this.$.playerOption.remove(0);
             }
@@ -96,13 +101,18 @@
             console.log('showdown: ',gameData);
         },
         onBetClick: function () {
+            var action = this.$.playerOption.value;
             socket.emit(EVENTS.CLIENT.I_TURN, {
-                turn: this.$.playerOption.value,
+                turn: action,
                 bet: parseInt(this.$.playerBet.value),
                 id: this.account.id
             });
-            this.$.modalMask.classList.add('visible');
             this.$.playerMenu.classList.remove('visible');
+            if (action === TURNS.FOLD) {
+                this.$.foldMask.classList.add('visible');
+            } else {
+                this.$.modalMask.classList.add('visible');
+            }
         }
 
     });

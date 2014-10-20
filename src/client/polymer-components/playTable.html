@@ -3,6 +3,15 @@
         <link rel="stylesheet" href="../css/style.css">
         <content></content>
         <div id="playTable" class="playTable">
+            <div id="gameInfo">
+                <div>BANK:<span id="gameBank"></span></div>
+                <div>BETS:</div>
+                <div id="lastPlayersInfo">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
             <div id="leftPlayer" class="cardstack">
                 <div id="leftPlayerMenu"></div>
                 <div id="leftPlayerHand"></div>
@@ -20,6 +29,7 @@
                 <div id="playerHand"></div>
             </div>
             <div id="modalMask"><div>PLEASE, WAIT FOR YOUR TURN</div></div>
+            <div id="foldMask"><div>YOU HAVE FOLD DOWN, WAIT FOR GAME OVER</div></div>
         </div>
     </template>
     <script src="../js/playTable.js"></script>
