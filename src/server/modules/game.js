@@ -126,6 +126,10 @@ module.exports = function() {
 
                 bank += bet;
 
+                _.extend(gameState, {
+                    lastTurn: playerTurnData.turn
+                });
+
             } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
                 //TODO: manage replacements here
             }
