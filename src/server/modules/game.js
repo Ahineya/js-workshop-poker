@@ -172,7 +172,7 @@ module.exports = function() {
                     lastTurn: playerTurnData.turn
                 });
             } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
-                currentPlayer.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN);
+                currentPlayer.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN, {});
             } else if (gameState.stage === constants.STAGES.SHOWDOWN) {
                 players.forEach(function(player) {
                     player.socket.emit(constants.EVENTS.SERVER.SHOWDOWN, {
