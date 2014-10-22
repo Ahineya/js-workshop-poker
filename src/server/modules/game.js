@@ -168,7 +168,8 @@ module.exports = function() {
 
             if ( (gameState.stage === constants.STAGES.FIRST_ROUND) || (gameState.stage === constants.STAGES.SECOND_ROUND) ) {
                 currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
-                    turnOptions: turnOptions
+                    turnOptions: turnOptions,
+                    lastTurn: playerTurnData.turn
                 });
             } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
                 currentPlayer.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN);
