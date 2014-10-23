@@ -91,7 +91,8 @@ document.addEventListener('polymer-ready', function () {
                         turn: TURNS.PASS,
                         value: null
                     }
-                ]
+                ],
+                lastBet: 10
             };
             var optionSelector = document.createElement('select');
             var first = true;
@@ -102,8 +103,10 @@ document.addEventListener('polymer-ready', function () {
             var betSelector = document.createElement('select');
             first = true;
             for (var j = 0; j < BETS.length; j++) {
-                betSelector.add(new Option(BETS[j]), first, first);
-                first = false;
+                if (BETS[j] >= parseInt(yourTurnData.lastBet)) {
+                    betSelector.add(new Option(BETS[j]), first, first);
+                    first = false;
+                }
             }
             playTable.onYourTurn(yourTurnData);
             expect(playTable.$.playerOption.innerHTML).toEqual(optionSelector.innerHTML);
@@ -123,7 +126,7 @@ document.addEventListener('polymer-ready', function () {
                     {
                         id: 'XfOZvcmKGjJCLAKdAAAC',
                         turn: TURNS.PASS,
-                        value: null
+                        value: 10
                     }
                 ]
             };
@@ -143,7 +146,8 @@ document.addEventListener('polymer-ready', function () {
             var bets = gameData.bets;
             for (var i = 0; i < gameData.players.length; i++) {
                 var player = gameData.players[i];
-                var gameInfo = player.name + '\'s last bet:' + bets[i];
+                var currentTurn = player.currentTurn || '';
+                var gameInfo = player.name + '\'s last bet:' + bets[i]  + '(' + currentTurn + ')';
                 expect(playTable.$.lastPlayersInfo.children[i].innerHTML).toEqual(gameInfo);
             }
             expect(playTable.$.gameBank.innerHTML).toEqual('' + gameData.bank);
@@ -172,6 +176,7 @@ document.addEventListener('polymer-ready', function () {
             expect(playTable.$.foldMask.classList.contains('visible')).toEqual(true);
         });
 
+
         gameData = {
             'stage': 'first_round',
             'players': [
@@ -179,7 +184,9 @@ document.addEventListener('polymer-ready', function () {
                     'name': 'Олег Гомозов',
                     'id': 'yivlw3hHxBLXgy0hAAAA',
                     'coins': 499,
-                    'hand': []},
+                    'hand': [],
+                    currentTurn: 'bet'
+                },
                 {
                     'name': 'Олег Гомозов',
                     'id': 'tZEjE0DxtQB6mJ0aAAAB',
@@ -190,12 +197,16 @@ document.addEventListener('polymer-ready', function () {
                         {'value': '9', 'suite': 'S'},
                         {'value': '7', 'suite': 'H'},
                         {'value': 'Q', 'suite': 'S'}
-                    ]},
+                    ],
+                    currentTurn: 'fold'
+                },
                 {
                     'name': 'Олег Гомозов',
                     'id': 'eVc7MilH6kdCFfOJAAAC',
                     'coins': 499,
-                    'hand': []}
+                    'hand': [],
+                    currentTurn: 'raise'
+                }
             ],
             'bank': 1503,
             'turn': 1,
@@ -211,9 +222,10 @@ document.addEventListener('polymer-ready', function () {
             bank: 500,
             turn: 2,
             dealer: '-tUTqde4QBlMEjZ_AAAB',
+            bets: [1,1,1],
             players: [
                 {
-                    'name': 'scjpCfmCsvzUbt3tAAAi',
+                    'name': 'Pasha',
                     'id': 'scjpCfmCsvzUbt3tAAAi',
                     'coins': 99,
                     'hand': [
@@ -225,13 +237,13 @@ document.addEventListener('polymer-ready', function () {
                     ]
                 },
                 {
-                    'name': '-tUTqde4QBlMEjZ_AAAB',
+                    'name': 'Oleg',
                     'id': '-tUTqde4QBlMEjZ_AAAB',
                     'coins': 99,
                     'hand': []
                 },
                 {
-                    'name': 'XfOZvcmKGjJCLAKdAAAC',
+                    'name': 'Andrey',
                     'id': 'XfOZvcmKGjJCLAKdAAAC',
                     'coins': 99,
                     'hand': []

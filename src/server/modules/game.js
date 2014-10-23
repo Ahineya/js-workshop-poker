@@ -84,6 +84,7 @@ module.exports = function() {
 
             //TODO: Process turn itself here
 
+            players.currentTurn(currentPlayerIndex, playerTurnData.turn);
             if ( (gameState.stage === constants.STAGES.FIRST_ROUND) || (gameState.stage === constants.STAGES.SECOND_ROUND) ) {
                 switch ( playerTurnData.turn ) {
                     case constants.TURNS.BET:
@@ -126,13 +127,11 @@ module.exports = function() {
 
                 bank += bet;
 
-                _.extend(gameState, {
-                    lastTurn: playerTurnData.turn
-                });
-
             } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
                 //TODO: manage replacements here
             }
+
+            _saveLastBetState(playerTurnData);
 
             if (turnIndex >= players.count() - 1) {
                 currentTurnsMap = constants.CARD_TURNS_MAP[constants.STAGES.SUBSTAGE_AFTER_DEALER];
@@ -169,7 +168,8 @@ module.exports = function() {
             if ( (gameState.stage === constants.STAGES.FIRST_ROUND) || (gameState.stage === constants.STAGES.SECOND_ROUND) ) {
                 currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
                     turnOptions: turnOptions,
-                    lastTurn: playerTurnData.turn
+                    lastTurn: gameState.lastTurn,
+                    lastBet: gameState.lastBet
                 });
             } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
                 currentPlayer.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN, {});
@@ -227,6 +227,15 @@ module.exports = function() {
         return currentPlayerIndex;
     }
 
+    function _saveLastBetState(playerTurnData) {
+        if ((playerTurnData.turn === constants.TURNS.BET) || (playerTurnData === constants.TURNS.RAISE)) {
+            _.extend(gameState, {
+                lastTurn: playerTurnData.turn,
+                lastBet: playerTurnData.bet
+            });
+        }
+    }
+
     return {
         addPlayers: _addPlayers,
         players: players,
@@ -247,7 +256,8 @@ function getSerialazablePlayers(players) {
                 name: item.name,
                 id: item.id,
                 coins: item.coins,
-                hand: item.hand
+                hand: item.hand,
+                currentTurn: item.currentTurn
             }
         }))
 }

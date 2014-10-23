@@ -33,12 +33,14 @@
                 return card.value + card.suite;
             }));
             this.generatePlayTableWithActions(data);
+            this.onGameInfo(data);
         },
         onGameInfo: function(gameData) {
             var bets = gameData.bets;
             for (var i = 0; i < gameData.players.length; i++) {
                 var player = gameData.players[i];
-                var gameInfo = player.name + '\'s last bet:' + bets[i];
+                var currentTurn = player.currentTurn || '';
+                var gameInfo = player.name + '\'s last bet:' + bets[i] + '(' + currentTurn + ')';
                 this.$.lastPlayersInfo.children[i].innerHTML = gameInfo;
             }
             this.$.gameBank.innerHTML = gameData.bank;
@@ -87,15 +89,20 @@
                 first = false;
             }
             first = true;
+            data.lastBet = data.lastBet || 0;
             for (var j = 0; j < BETS.length; j++) {
-                this.$.playerBet.add(new Option(BETS[j]), first, first);
-                first = false;
+                if (BETS[j] >= parseInt(data.lastBet)) {
+                    this.$.playerBet.add(new Option(BETS[j]), first, first);
+                    first = false;
+                }
             }
-            this.$.modalMask.classList.remove('visible');
-            this.$.playerMenu.classList.add('visible');
+            this.toggleModalMask(true);
         },
         onReplacementTurn: function(gameData) {
-            console.log('replacement: ',gameData);
+            var replace = prompt('FIRST ROUND IS FINISHED. DO YOU WANT TO REPLACE CARDS? Yes/No',100);
+            socket.emit(EVENTS.CLIENT.I_EXCHANGE_CARDS, {
+                replaceCards: (replace.toUpperCase() === 'YES')
+            });
         },
         onShowdown: function(gameData) {
             console.log('showdown: ',gameData);
@@ -107,11 +114,19 @@
                 bet: parseInt(this.$.playerBet.value),
                 id: this.account.id
             });
-            this.$.playerMenu.classList.remove('visible');
-            if (action === TURNS.FOLD) {
-                this.$.foldMask.classList.add('visible');
+            this.toggleModalMask(false, action === TURNS.FOLD);
+        },
+        toggleModalMask: function (hide, fold) {
+            if (hide) {
+                this.$.modalMask.classList.remove('visible');
+                this.$.playerMenu.classList.add('visible');
             } else {
-                this.$.modalMask.classList.add('visible');
+                if (fold) {
+                    this.$.foldMask.classList.add('visible');
+                } else {
+                    this.$.modalMask.classList.add('visible');
+                }
+                this.$.playerMenu.classList.remove('visible');
             }
         }
 

@@ -58,6 +58,10 @@ module.exports = function() {
         players[playerIndex].coins -= amount;
     }
 
+    function _currentTurn(playerIndex, currentTurn) {
+        players[playerIndex].currentTurn = currentTurn;
+    }
+
     return {
         add: _add,
         getPlayers: _getPlayers,
@@ -66,6 +70,7 @@ module.exports = function() {
         count: _count,
         ante: _ante,
         forEach: _forEach,
-        bet: _bet
+        bet: _bet,
+        currentTurn: _currentTurn
     }
 };
