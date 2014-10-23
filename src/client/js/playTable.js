@@ -54,6 +54,7 @@
             var cardElement = document.createElement('div');
             cardElement.classList.add('card');
             cardElement.classList.add('rank' + card);
+            cardElement.dataset.card = card;
             cardElement.innerHTML = value + ' <br/> &' + CARD_SUITS[suit] + ';';
             return cardElement;
         },
@@ -99,13 +100,40 @@
             this.toggleModalMask(true);
         },
         onReplacementTurn: function(gameData) {
-            var replace = prompt('FIRST ROUND IS FINISHED. DO YOU WANT TO REPLACE CARDS? Yes/No',100);
-            socket.emit(EVENTS.CLIENT.I_EXCHANGE_CARDS, {
-                replaceCards: (replace.toUpperCase() === 'YES')
-            });
+            this.toggleModalMask(true);
+            this.$.playerMenu.classList.remove('visible');
+            this.$.playerReplace.classList.add('visible');
+            this.$.systemMessages.classList.add('visible');
+            var playerCards = this.$.playerHand.children;
+            var self = this;
+            self.replaceCards = {};
+            for (var i = 0; i < playerCards.length; i++) {
+                var card = playerCards[i];
+                card.addEventListener('click', this.cardClick);
+            }
+        },
+        cardClick: function () {
+            this.classList.toggle('replaced');
+            if (this.classList.contains('replaced')) {
+                self.replaceCards[this.dataset.card] = true;
+            } else {
+                self.replaceCards[this.dataset.card] = false;
+            }
         },
         onShowdown: function(gameData) {
             console.log('showdown: ',gameData);
+        },
+        onReplaceClick: function () {
+            var replaceCards = [];
+            for (var card in this.replaceCards) {
+                if (this.replaceCards.hasOwnProperty(card)) {
+                    replaceCards.push(card);
+                }
+            }
+            socket.emit(EVENTS.CLIENT.I_EXCHANGE_CARDS, {
+                replaceCards: replaceCards
+            });
+
         },
         onBetClick: function () {
             var action = this.$.playerOption.value;

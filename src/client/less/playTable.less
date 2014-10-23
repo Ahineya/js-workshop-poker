@@ -105,10 +105,49 @@
     }
   }
 
+  #systemMessages {
+    position: absolute;
+    top: 40%;
+    left: 25%;
+    width: 50%;
+    height: 26px;
+    display: none;
+    > div {
+      margin: 0 auto;
+      text-align: center;
+      font-size: 14px;
+      color: red;
+    }
+    &.visible {
+      display: block;
+    }
+  }
+
   #playerMenu {
     display: none;
     &.visible {
       display: block;
     }
   }
+
+  #playerReplace {
+    display: none;
+    &.visible {
+      display: block;
+    }
+  }
+
+  .card {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+  }
+
+  .card.replaced {
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 5px solid rgba(81, 203, 238, 1);
+  }
+
 }

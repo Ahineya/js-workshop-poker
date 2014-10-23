@@ -141,6 +141,7 @@ document.addEventListener('polymer-ready', function () {
             });
         });
 
+
         it('will show game info when it comes from server', function () {
             playTable.onGameInfo(gameData);
             var bets = gameData.bets;
