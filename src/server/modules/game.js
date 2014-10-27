@@ -14,13 +14,13 @@ module.exports = function() {
 
     var turn = 1;
 
-    var dealer;
     var currentPlayerIndex;
     var currentPlayer;
 
     var currentTurnsMap = constants.CARD_TURNS_MAP[gameState.stage];
 
     var turnIndex = 0;
+    var replacementsCount = 0;
 
     var bets = [1,1,1];
 
@@ -132,8 +132,6 @@ module.exports = function() {
 
                 bank += bet;
 
-            } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
-                //TODO: manage replacements here
             }
 
             _saveLastBetState(playerTurnData);
@@ -143,7 +141,6 @@ module.exports = function() {
             }
             turnIndex++;
 
-            //TODO: process game state here
             if (turnIndex >= players.count()*2 - 1) {
                 turnIndex = 0;
                 currentPlayerIndex = _nextPlayer(currentPlayerIndex); //Skip dealer before next stage
@@ -181,12 +178,20 @@ module.exports = function() {
                     player.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN, {});
                 });
             } else if (gameState.stage === constants.STAGES.SHOWDOWN) {
+
+                _.extend(gameState, {
+                    players: getSerialazablePlayers(players)
+                });
+
+                gameState.players = gameState.players.map(function(player) {
+                    var playerWithCombination = _.extend({}, player, {combination: handChecker.findCombination(player.hand)});
+                    return playerWithCombination;
+                });
+
                 players.forEach(function(player) {
                     player.socket.emit(constants.EVENTS.SERVER.SHOWDOWN, {
                         winner: 0,
-                        combinations: {
-                            //TODO: find out coolest possible object here :)
-                        }
+                        gameState: gameState
                     });
                 });
             }
@@ -203,8 +208,6 @@ module.exports = function() {
         }
 
     }
-
-    var replacementsCount = 0;
 
     function _processReplacements( replacementData ) {
 

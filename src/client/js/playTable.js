@@ -59,6 +59,7 @@
             return cardElement;
         },
         generateCardStack: function (cards) {
+            this.$.playerHand.innerHTML = '';
             for (var i = 0; i < cards.length; i++) {
                 var cardElement = this.getPlayCardElement(cards[i]);
                 this.$.playerHand.appendChild(cardElement);
@@ -66,6 +67,8 @@
         },
 
         generatePlayTableWithActions: function (cards) {
+            this.$.leftPlayerHand.innerHTML = '';
+            this.$.rightPlayerHand.innerHTML = '';
             for (var i = 0; i < 5; i++) {
                 var hiddenCard = document.createElement('div');
                 hiddenCard.classList.add('card');
@@ -99,6 +102,7 @@
             }
             this.toggleModalMask(true);
         },
+        /* jshint ignore:start */
         onReplacementTurn: function(gameData) {
             this.toggleModalMask(true);
             this.$.playerMenu.classList.remove('visible');
@@ -119,6 +123,7 @@
                 });
             }
         },
+        /* jshint ignore:end */
         onShowdown: function(gameData) {
             console.log('showdown: ',gameData);
         },
