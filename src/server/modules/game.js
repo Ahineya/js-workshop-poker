@@ -63,7 +63,12 @@ module.exports = function() {
             player.socket.on(
                 constants.EVENTS.CLIENT.I_TURN,
                 _processTurn
-            )
+            );
+
+            player.socket.on(
+                constants.EVENTS.CLIENT.I_EXCHANGE_CARDS,
+                _processReplacements
+            );
 
         });
 
@@ -172,7 +177,9 @@ module.exports = function() {
                     lastBet: gameState.lastBet
                 });
             } else if (gameState.stage === constants.STAGES.REPLACEMENT) {
-                currentPlayer.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN, {});
+                players.forEach(function(player) {
+                    player.socket.emit(constants.EVENTS.SERVER.REPLACEMENT_TURN, {});
+                });
             } else if (gameState.stage === constants.STAGES.SHOWDOWN) {
                 players.forEach(function(player) {
                     player.socket.emit(constants.EVENTS.SERVER.SHOWDOWN, {
@@ -191,6 +198,39 @@ module.exports = function() {
                         players: cutGameStateForPlayer(_.cloneDeep(gameState), player.id)
                     })
                 );
+            });
+
+        }
+
+    }
+
+    var replacementsCount = 0;
+
+    function _processReplacements( replacementData ) {
+
+        if (replacementData.replaceCards.length) {
+            var replacement = deck.give(replacementData.replaceCards.length);
+            players.replaceCards(this.id, replacementData.replaceCards, replacement);
+        }
+
+        if(++replacementsCount === 3) {
+            gameState.stage = constants.STAGES_ORDER[constants.STAGES_ORDER.indexOf(gameState.stage) + 1];
+
+            _.extend(gameState, {
+                players: getSerialazablePlayers(players)
+            });
+
+            players.forEach(function(player) {
+                player.socket.emit(
+                    constants.EVENTS.SERVER.START_GAME,
+                    _.extend({}, gameState, {
+                        players: cutGameStateForPlayer(_.cloneDeep(gameState), player.id)
+                    })
+                );
+            });
+
+            currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
+                turnOptions: constants.CARD_TURNS_MAP[constants.STAGES.SECOND_ROUND]
             });
 
         }

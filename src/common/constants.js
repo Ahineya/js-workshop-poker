@@ -11,6 +11,7 @@
             ROUND_ENDS: 'roundEnds',
             GAME_INFO: 'game_info',
             REPLACEMENT_TURN: 'replacementTurn',
+            SECOND_ROUND_START: 'second_round_start',
             SHOWDOWN: 'showdown'
         }
     };
@@ -31,7 +32,8 @@
         CALL: 'call',
         PASS: 'pass',
         FOLD: 'fold',
-        RAISE: 'raise'
+        RAISE: 'raise',
+        REPLACEMENT: 'replacement'
     };
     var STAGES = {
         FIRST_ROUND: "first_round", //first round

@@ -61,12 +61,43 @@ module.exports = function() {
     function _currentTurn(playerIndex, currentTurn) {
         players[playerIndex].currentTurn = currentTurn;
     }
+    /* jshint ignore:start */
+
+    function _replaceCards(id, cards, replacement) {
+        for (var i=0; i<players.length; i++) {
+            if (players[i].id === id) {
+
+                cards = cards.map(function(card) {
+
+                    var res = card.match(/(.*)(.$)/);
+                    return {
+                        value: res[1],
+                        suite: res[2]
+                    }
+
+                });
+
+                cards.forEach( function(card) {
+                    players[i].hand.splice(_.findIndex(players[i].hand, card), 1);
+                });
+
+                players[i].hand = _.union(players[i].hand, replacement);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* jshint ignore:end */
+
 
     return {
         add: _add,
         getPlayers: _getPlayers,
         getById: _getPlayerById,
         assignHand: _assignHand,
+        replaceCards: _replaceCards,
         count: _count,
         ante: _ante,
         forEach: _forEach,
