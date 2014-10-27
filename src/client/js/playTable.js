@@ -109,15 +109,14 @@
             self.replaceCards = {};
             for (var i = 0; i < playerCards.length; i++) {
                 var card = playerCards[i];
-                card.addEventListener('click', this.cardClick);
-            }
-        },
-        cardClick: function () {
-            this.classList.toggle('replaced');
-            if (this.classList.contains('replaced')) {
-                self.replaceCards[this.dataset.card] = true;
-            } else {
-                self.replaceCards[this.dataset.card] = false;
+                card.addEventListener('click', function () {
+                    this.classList.toggle('replaced');
+                    if (this.classList.contains('replaced')) {
+                        self.replaceCards[this.dataset.card] = true;
+                    } else {
+                        self.replaceCards[this.dataset.card] = false;
+                    }
+                });
             }
         },
         onShowdown: function(gameData) {
