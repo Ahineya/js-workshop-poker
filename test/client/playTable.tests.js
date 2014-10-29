@@ -41,7 +41,7 @@ document.addEventListener('polymer-ready', function () {
                 {},
                 {},
                 {}
-            ]);
+            ], playTable.$.playerHand);
             expect(getPlayCardElementStub.callCount).toEqual(3);
         });
 

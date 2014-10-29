@@ -31,7 +31,7 @@
             }, this)[0];
             this.generateCardStack(this.myCards.hand.map(function (card) {
                 return card.value + card.suite;
-            }));
+            }), this.$.playerHand);
             this.generatePlayTableWithActions(data);
             this.onGameInfo(data);
         },
@@ -58,14 +58,13 @@
             cardElement.innerHTML = value + ' <br/> &' + CARD_SUITS[suit] + ';';
             return cardElement;
         },
-        generateCardStack: function (cards) {
-            this.$.playerHand.innerHTML = '';
+        generateCardStack: function (cards, parent) {
+            parent.innerHTML = '';
             for (var i = 0; i < cards.length; i++) {
                 var cardElement = this.getPlayCardElement(cards[i]);
-                this.$.playerHand.appendChild(cardElement);
+                parent.appendChild(cardElement);
             }
         },
-
         generatePlayTableWithActions: function (cards) {
             this.$.leftPlayerHand.innerHTML = '';
             this.$.rightPlayerHand.innerHTML = '';
@@ -109,23 +108,37 @@
             this.$.playerReplace.classList.add('visible');
             this.$.systemMessages.classList.add('visible');
             var playerCards = this.$.playerHand.children;
-            var self = this;
-            self.replaceCards = {};
+            this.replaceCards = {};
             for (var i = 0; i < playerCards.length; i++) {
                 var card = playerCards[i];
-                card.addEventListener('click', function () {
-                    this.classList.toggle('replaced');
-                    if (this.classList.contains('replaced')) {
-                        self.replaceCards[this.dataset.card] = true;
-                    } else {
-                        self.replaceCards[this.dataset.card] = false;
-                    }
-                });
+                card.addEventListener('click', this.onCardClick.bind(this));
+            }
+        },
+        onCardClick: function (event) {
+            var card = event.target;
+            card.classList.toggle('replaced');
+            if (card.classList.contains('replaced')) {
+                this.replaceCards[card.dataset.card] = true;
+            } else {
+                this.replaceCards[card.dataset.card] = false;
             }
         },
         /* jshint ignore:end */
         onShowdown: function(gameData) {
-            console.log('showdown: ',gameData);
+            var containers = [
+                this.$.leftPlayerHand,
+                this.$.playerHand,
+                this.$.rightPlayerHand
+            ];
+            var self = this;
+            gameData.gameState.players.forEach(function(player, index) {
+                self.generateCardStack(player.hand.map(function (card) {
+                    return card.value + card.suite;
+                }), containers[index]);
+            });
+            this.toggleModalMask(true);
+            this.$.playerMenu.classList.remove('visible');
+            this.$.systemMessages.classList.remove('visible');
         },
         onReplaceClick: function () {
             var replaceCards = [];
@@ -134,10 +147,12 @@
                     replaceCards.push(card);
                 }
             }
+            this.$.systemMessages.classList.remove('visible');
+            this.$.playerReplace.classList.remove('visible');
+            this.toggleModalMask(false);
             socket.emit(EVENTS.CLIENT.I_EXCHANGE_CARDS, {
                 replaceCards: replaceCards
             });
-
         },
         onBetClick: function () {
             var action = this.$.playerOption.value;
