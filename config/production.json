@@ -5,7 +5,7 @@
             "facebook": {
                 "clientID": "1485693021695888",
                 "clientSecret": "3d4ec2214656874f3a0e0da44540448f",
-                "callbackURL": "http://local.foo.com:8080/auth/facebook/callback"
+                "callbackURL": "http://js-workshop-poker.herokuapp.com/auth/facebook/callback"
             }
         }
     }
