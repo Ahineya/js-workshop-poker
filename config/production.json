@@ -1,0 +1,12 @@
+{
+    "app": {
+        "mongodb": "mongodb://jspoker:jspoker@ds043350.mongolab.com:43350/js-workshop-poker",
+        "oauth": {
+            "facebook": {
+                "clientID": "1485693021695888",
+                "clientSecret": "3d4ec2214656874f3a0e0da44540448f",
+                "callbackURL": "http://local.foo.com:8080/auth/facebook/callback"
+            }
+        }
+    }
+}

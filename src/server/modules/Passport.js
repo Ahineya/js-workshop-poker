@@ -4,9 +4,9 @@ var User = require('./User.js');
 module.exports = {
     Facebook: function(config) {
         return new FacebookStrategy({
-                clientID: config.oauth.facebook.clientID,
-                clientSecret: config.oauth.facebook.clientSecret,
-                callbackURL: config.oauth.facebook.callbackURL
+                clientID: config.get('app.oauth.facebook.clientID'),
+                clientSecret: config.get('app.oauth.facebook.clientSecret'),
+                callbackURL: config.get('app.oauth.facebook.callbackURL')
             },
             function (accessToken, refreshToken, profile, done) {
                 User.findOne({ oauthID: profile.id }, function (err, user) {

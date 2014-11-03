@@ -17,14 +17,14 @@ var players = new Players();
 
 var Game = require('./modules/game.js');
 
-var config = require('./config.js');
+var config = require('config');
 var mongoose = require('mongoose');
 var passport = require('passport');
 
 var MongoStore = require('connect-mongo')(session);
 var passportSocketIo = require("passport.socketio");
 
-mongoose.connect(config.mongodb);
+mongoose.connect(config.get('app.mongodb'));
     var mongoStore = new MongoStore({
         db : 'js-workshop-poker',
         mongoose_connection: mongoose.connections[0]
