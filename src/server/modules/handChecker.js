@@ -74,6 +74,10 @@ module.exports = (function() {
         isNone
     ];
 
+    var combNames = combinations.map(function(combFunction) {
+        return combFunction.name.slice(2);
+    });
+
     function _findCombination(hand) {
 
         countedSuites = _.countBy(hand, 'suite');
@@ -92,7 +96,22 @@ module.exports = (function() {
         },{})).combination;
     }
 
+    function _findWinner() {
+        var combinations = [].slice.call(arguments);
+        var winning = 100;
+
+        combinations.forEach(function(combination) {
+            if (combNames.indexOf(combination) < winning) {
+                winning = combNames.indexOf(combination);
+            }
+        });
+
+        return combNames[winning];
+
+    }
+
     return {
-        findCombination: _findCombination
+        findCombination: _findCombination,
+        findWinner: _findWinner
     }
 })();
