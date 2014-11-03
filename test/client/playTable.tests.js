@@ -18,7 +18,6 @@ document.addEventListener('polymer-ready', function () {
             expect(socketWaitForGameStartStub.thirdCall.args[0]).toEqual(EVENTS.SERVER.YOUR_TURN);
         });
 
-
         it('should get correct card styling', function () {
             for (var i = 0; i < CARDS.length; i++) {
                 var card = CARDS[i];
@@ -28,20 +27,20 @@ document.addEventListener('polymer-ready', function () {
                 cardElement.classList.add('card');
                 cardElement.classList.add('rank' + card);
                 cardElement.innerHTML = value + ' <br/> &' + CARD_SUITS[suit] + ';';
-                var actualElement = playTable.getPlayCardElement(card);
+                var actualElement = playTable.$.playerHand.getPlayCardElement(card);
                 expect(actualElement.innerHTML).toEqual(cardElement.innerHTML);
                 expect(actualElement.classList.toString()).toEqual(cardElement.classList.toString());
             }
         });
 
         it('should generate correct playStack', function () {
-            var getPlayCardElementStub = pockerSandbox.stub(playTable, 'getPlayCardElement').returns(document.
+            var getPlayCardElementStub = pockerSandbox.stub(playTable.$.playerHand, 'getPlayCardElement').returns(document.
                 createElement('div'));
-            playTable.generateCardStack([
+            playTable.$.playerHand.generateCardStack([
                 {},
                 {},
                 {}
-            ], playTable.$.playerHand);
+            ]);
             expect(getPlayCardElementStub.callCount).toEqual(3);
         });
 
@@ -52,7 +51,7 @@ document.addEventListener('polymer-ready', function () {
         });
 
         it('should generate play stack, when it comes to player', function () {
-            var generateCardStackStub = pockerSandbox.stub(playTable, 'generateCardStack');
+            var generateCardStackStub = pockerSandbox.stub(playTable.$.playerHand, 'generateCardStack');
             playTable.account = account;
             playTable.onStartGame(cards);
             expect(generateCardStackStub.firstCall.args[0]).toEqual(['9D', '7D', '2S', 'AS', 'AC']);
@@ -112,6 +111,7 @@ document.addEventListener('polymer-ready', function () {
             expect(playTable.$.playerOption.innerHTML).toEqual(optionSelector.innerHTML);
             expect(playTable.$.playerBet.innerHTML).toEqual(betSelector.innerHTML);
         });
+
 
         it('should send player turn with params to server', function () {
             var socketSendTurnStub = pockerSandbox.stub(socket, 'emit');
