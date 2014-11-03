@@ -1,5 +1,6 @@
 var Players = require('./players.js');
 var Deck = require('./deck.js');
+var User = require('./User.js');
 var handChecker = require('./handChecker.js');
 var _ = require('lodash');
 var constants = require('../../common/constants.js');
@@ -188,11 +189,22 @@ module.exports = function() {
                     return playerWithCombination;
                 });
 
+                var combinations = gameState.players.map(function(player) {
+                    return player.combination
+                });
+
+                var winning = handChecker.findWinner( combinations );
+
                 players.forEach(function(player) {
                     player.socket.emit(constants.EVENTS.SERVER.SHOWDOWN, {
-                        winner: 0,
+                        winner: player.combination == winning,
                         gameState: gameState
                     });
+
+                    User.findOneAndUpdate({_id: player.socket.request.user.id}, { coins: player.coins }, false, function() {
+                        console.log('saved');
+                    })
+
                 });
             }
 
@@ -235,6 +247,8 @@ module.exports = function() {
             currentPlayer.socket.emit(constants.EVENTS.SERVER.YOUR_TURN, {
                 turnOptions: constants.CARD_TURNS_MAP[constants.STAGES.SECOND_ROUND]
             });
+
+            //User.findOneAndUpdate({}, { name: 'jason borne' }, options, callback)
 
         }
 
